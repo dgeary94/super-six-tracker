@@ -1,7 +1,3 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-
-export default defineConfig({
-    base: '/super-six-tracker/',
-    plugins: [vue()]
-})
+export default {
+    base: '/super-six-tracker/'
+}
