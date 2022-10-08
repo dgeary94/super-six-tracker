@@ -45,7 +45,7 @@ const svg = d3.select("#graph")
           `translate(${margin.left}, ${margin.top})`);
 
 // Read data
-d3.csv("./data/super-six-scores.csv").then( function(data) {
+d3.csv("/data/super-six-scores.csv").then( function(data) {
 
   // List of groups (here I have one group per column)
   const allGroup = ["andy", "david", "jake", "james", "jonnie", "josh", "sam"];
