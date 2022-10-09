@@ -1,4 +1,5 @@
 import './style.css'
+import csv from "./super-six-scores.csv"
 
 // Insert DOM elements
 document.querySelector('#app').innerHTML = `
@@ -45,7 +46,7 @@ const svg = d3.select("#graph")
           `translate(${margin.left}, ${margin.top})`);
 
 // Read data
-d3.csv("super-six-scores.csv").then( function(data) {
+d3.csv(csv).then( function(data) {
 
   // List of groups (here I have one group per column)
   const allGroup = ["andy", "david", "jake", "james", "jonnie", "josh", "sam"];
