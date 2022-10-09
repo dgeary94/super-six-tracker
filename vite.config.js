@@ -3,5 +3,6 @@ import dsv from '@rollup/plugin-dsv'
 
 export default defineConfig({
     plugins: [dsv()],
-    base: '/super-six-tracker/'
+    base: '/super-six-tracker/',
+    assetsInclude: ['**/*.csv']
 })
