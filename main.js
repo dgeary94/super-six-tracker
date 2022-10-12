@@ -8,7 +8,7 @@ document.querySelector('#app').innerHTML = `
     <div id=graph><div>`
 
 // Set the dimensions and margins of the graph
-const margin = {top: 50, right: 90, bottom: 50, left: 100};
+const margin = {top: 50, right: 90, bottom: 50, left: 80};
 const defaultWidth = 800 - margin.left - margin.right;
 const defaultHeight = 500 - margin.top - margin.bottom;
 const defaultRatio = defaultWidth / defaultHeight;
@@ -20,7 +20,7 @@ function setSize(width, height) {
     const currentHeight = window.innerHeight;
     const currentRatio = currentWidth / currentHeight;
 
-    // desktop ratio
+    // For desktop sized screens
     if (currentRatio > defaultRatio) {
       height = defaultHeight;
       width = defaultWidth;}
@@ -34,33 +34,25 @@ function setSize(width, height) {
 
 [width, height] = setSize();
 
-console.log(width, height);
-
 // Append the svg object to the body of the page
 const svg = d3.select("#graph")
   .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform",
-          `translate(${margin.left}, ${margin.top})`);
+    .append("g")
+    .attr("transform",`translate(${margin.left}, ${margin.top})`);
 
-// Read data
+// Read data from csv file
 d3.csv(csv).then( function(data) {
 
-  console.log(data);
-
-  // List of groups (here I have one group per column)
-  const allGroup = ["andy", "david", "jake", "james", "jonnie", "josh", "sam"];
+  const allNames = ["andy", "david", "jake", "james", "jonnie", "josh", "sam"];
 
   // Reformat the data: we need an array of arrays of {x, y} tuples
-  const dataReady = allGroup.map( function(grpName) { // .map allows to do something for each element of the list
+  const dataReady = allNames.map( function(grpName) { // .map allows to do something for each element of the list
     return {
       name: grpName,
       values: data.filter(function(d) {
-        if (d.name === grpName) {
-          return true;
-        }
+        if (d.name === grpName) {return true;}
         return false;
       }).map(function(d) { return {round: +d.round, score: +d.score_sum} })
     };
@@ -75,19 +67,18 @@ d3.csv(csv).then( function(data) {
     .style("font-size", "12px")
     .call(d3.axisBottom(x));
 
-  // gridlines in x axis function
-  function make_x_gridlines() {		
+  // Gridlines for x-axis function
+  function addGridlines() {		
     return d3.axisBottom(x).ticks();
     }
 
-  // add the X gridlines
+  // Add the X gridlines
   svg.append("g")			
-  .attr("class", "grid")
-  .attr("transform", "translate(0," + height + ")")
-  .call(make_x_gridlines()
-      .tickSize(-height)
-      .tickFormat("")
-  )
+    .attr("class", "grid")
+    .attr("transform", "translate(0," + height + ")")
+    .call(addGridlines()
+    .tickSize(-height)
+    .tickFormat(""));
 
   // Add X axis label
   svg.append("text")
@@ -104,18 +95,17 @@ d3.csv(csv).then( function(data) {
     .style("font-size", "12px")
     .call(d3.axisLeft(y));
 
-  // gridlines in y axis function
+  // Gridlines for y-axis function
   function make_y_gridlines() {		
     return d3.axisLeft(y).ticks()
     }
 
-   // add the Y gridlines
-   svg.append("g")			
-   .attr("class", "grid")
-   .call(make_y_gridlines()
-       .tickSize(-width)
-       .tickFormat("")
-   )
+   // Add the Y gridlines
+  svg.append("g")			
+    .attr("class", "grid")
+    .call(make_y_gridlines()
+    .tickSize(-width)
+    .tickFormat(""));
 
   // Add Y axis label
   svg.append("text")
@@ -124,23 +114,22 @@ d3.csv(csv).then( function(data) {
     .attr("y", height/2)
     .text("Score");
 
-  // A color scale: one color for each group
+  // Creating the colour scheme
   const myColor = d3.scaleOrdinal()
-    .domain(allGroup)
+    .domain(allNames)
     .range(d3.schemeDark2);
 
   // Add the lines
   const line = d3.line()
   .x(d => x(+d.round))
   .y(d => y(+d.score))
-    
   svg.selectAll("myLines")
     .data(dataReady)
     .join("path")
-      .attr("d", d => line(d.values))
-      .attr("stroke", d => myColor(d.name))
-      .style("stroke-width", 2)
-      .style("fill", "none")
+    .attr("d", d => line(d.values))
+    .attr("stroke", d => myColor(d.name))
+    .style("stroke-width", 2)
+    .style("fill", "none")
 
   // Add the points
   svg
@@ -169,4 +158,5 @@ svg.selectAll("myLabels")
       .text(d => d.name)
       .style("fill", d => myColor(d.name))
       .style("font-size", 15);
+      // Add on click function to toggle the opacity of each legend.
 });
