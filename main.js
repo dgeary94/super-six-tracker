@@ -89,7 +89,7 @@ d3.csv(csv).then( function(data) {
 
   // Add Y axis
   const y = d3.scaleLinear()
-    .domain([0, d3.max(data, function(d) { return +d.score_sum; }) + 5])
+    .domain([0, Math.ceil(d3.max(data, function(d) { return +d.score_sum; })/10)*10])
     .range([height, 0]);
   svg.append("g")
     .style("font-size", "12px")
