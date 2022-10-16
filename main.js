@@ -9,7 +9,7 @@ document.querySelector('#app').innerHTML = `
     <div id=graph><div>`
 
 // Set the dimensions and margins of the graph
-const margin = {top: 50, right: 90, bottom: 50, left: 80};
+const margin = {top: 40, right: 90, bottom: 40, left: 80};
 const defaultWidth = 800 - margin.left - margin.right;
 const defaultHeight = 500 - margin.top - margin.bottom;
 const defaultRatio = defaultWidth / defaultHeight;
@@ -156,7 +156,7 @@ const legend = svg.selectAll("myLabels")
     .append("text")
       .datum(d => { return {name: d.name, value: d.values[d.values.length - 1]}; }) // keep only the last value of each round series
       .attr("transform",d => `translate(${x(d.value.round)},${y(d.value.score)})`) // Put the text at the position of the last point
-      .attr("x", d => {if(d.name === "jake"){return 55}else {return 12}}) // shift the text a bit more right
+      .attr("x", 12) //d => {if(d.name === "jake"){return 55}else {return 12}}) // shift the text a bit more right
       .text(d => d.name)
       .style("fill", d => myColor(d.name))
       .style("font-size", "15px")
