@@ -5,6 +5,7 @@ import csv from "./super-six-scores.csv"
 document.querySelector('#app').innerHTML = `
     <h1>&#9917 Super 6 League Tracker</h1>
     <h2>QUE SERA SERA, WE'RE GOING TO WORMBELLY</h2>
+    <p>Click each name to toggle data series.</p>
     <div id=graph><div>`
 
 // Set the dimensions and margins of the graph
@@ -122,33 +123,34 @@ d3.csv(csv).then( function(data) {
   // Add the lines
   const line = d3.line()
   .x(d => x(+d.round))
-  .y(d => y(+d.score))
-  svg.selectAll("myLines")
+  .y(d => y(+d.score));
+  
+  const lines = svg.selectAll("myLines")
     .data(dataReady)
     .join("path")
     .attr("d", d => line(d.values))
     .attr("stroke", d => myColor(d.name))
     .style("stroke-width", 2)
-    .style("fill", "none")
+    .style("fill", "none");
 
   // Add the points
-  svg
-  // First we need to enter in a group
-  .selectAll("myDots")
-  .data(dataReady)
-  .join('g')
-    .style("fill", d => myColor(d.name))
-  // Second we need to enter in the 'values' part of this group
-  .selectAll("myPoints")
-  .data(d => d.values)
-  .join("circle")
-    .attr("cx", d => x(d.round))
-    .attr("cy", d => y(d.score))
-    .attr("r", 3)
-    .attr("stroke", "white")
+  // const points = svg
+  // // First we need to enter in a group
+  // .selectAll("myDots")
+  // .data(dataReady)
+  // .join('g')
+  //   .style("fill", d => myColor(d.name))
+  // // Second we need to enter in the 'values' part of this group
+  // .selectAll("myPoints")
+  // .data(d => d.values)
+  // .join("circle")
+  //   .attr("cx", d => x(d.round))
+  //   .attr("cy", d => y(d.score))
+  //   .attr("r", 3)
+  //   .attr("stroke", "white")
 
 // Add a legend at the end of each line
-svg.selectAll("myLabels")
+const legend = svg.selectAll("myLabels")
   .data(dataReady)
   .join('g')
     .append("text")
@@ -157,6 +159,47 @@ svg.selectAll("myLabels")
       .attr("x", d => {if(d.name === "jake"){return 55}else {return 12}}) // shift the text a bit more right
       .text(d => d.name)
       .style("fill", d => myColor(d.name))
-      .style("font-size", 15);
+      .style("font-size", "15px")
+      .style("border", "solid")
       // Add on click function to toggle the opacity of each legend.
+      .on("click", (d,i) => {
+
+        // Get legend names
+        const legendNames = legend.selectAll("g")._parents;
+        let legendSelect = null;
+        for (let idx = 0; idx < legendNames.length; idx++) {
+          if (i.name === legendNames[idx].innerHTML) {
+            legendSelect = legendNames[idx];
+            break
+          }
+        }
+
+        // Get line names
+        const lineNames = lines.selectAll("path")._parents;
+        let lineSelect = null;
+        for (let idx = 0; idx < lineNames.length; idx++) {
+          if (myColor(i.name) === lineNames[idx].attributes.stroke.value) {
+            lineSelect = lineNames[idx];
+            break
+          }
+        }
+        
+        // Toggle legend opacity
+        d3.select(legendSelect).style("opacity", () => {
+          if (d3.select(legendSelect).style("opacity") === "1") {
+            return "0.33";
+          } else {
+            return "1";
+          }
+        });
+
+        // Toggle line opacity
+        d3.select(lineSelect).style("opacity", () => {
+          if (d3.select(lineSelect).style("opacity") === "1") {
+            return "0";
+          } else {
+            return "1";
+          }
+        });
+      });
 });
