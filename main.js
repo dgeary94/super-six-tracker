@@ -6,7 +6,7 @@ document.querySelector('#app').innerHTML = `
     <h1>&#9917 Super 6 League Tracker</h1>
     <h2>QUE SERA SERA, WE'RE GOING TO WORMBELLY</h2>
     <p>Click each name to toggle data series.</p>
-    <div id=graph><div>`
+    <div id="graph"><div>`
 
 // Set the dimensions and margins of the graph
 const margin = {top: 40, right: 90, bottom: 40, left: 80};
@@ -49,15 +49,19 @@ d3.csv(csv).then( function(data) {
   const allNames = ["andy", "david", "jake", "james", "jonnie", "josh", "sam"];
 
   // Reformat the data: we need an array of arrays of {x, y} tuples
-  const dataReady = allNames.map( function(grpName) { // .map allows to do something for each element of the list
+  const graphData = allNames.map( function(name) { // .map allows to do something for each element of the list
     return {
-      name: grpName,
+      name: name,
       values: data.filter(function(d) {
-        if (d.name === grpName) {return true;}
+        if (d.name === name) {return true;}
         return false;
-      }).map(function(d) { return {round: +d.round, score: +d.score_sum} })
+      }).map(function(d) { return {round: +d.round, score:+d.score, score_sum: +d.score_sum} })
     };
   });
+
+  // Functions for adding gridlines
+  function addXGridlines() {  return d3.axisBottom(x).ticks();  }
+  function addYGridlines() {  return d3.axisLeft(y).ticks();  }
 
   // Add X axis
   const x = d3.scaleLinear()
@@ -68,16 +72,11 @@ d3.csv(csv).then( function(data) {
     .style("font-size", "12px")
     .call(d3.axisBottom(x));
 
-  // Gridlines for x-axis function
-  function addGridlines() {		
-    return d3.axisBottom(x).ticks();
-    }
-
   // Add the X gridlines
   svg.append("g")			
     .attr("class", "grid")
     .attr("transform", "translate(0," + height + ")")
-    .call(addGridlines()
+    .call(addXGridlines()
     .tickSize(-height)
     .tickFormat(""));
 
@@ -96,15 +95,10 @@ d3.csv(csv).then( function(data) {
     .style("font-size", "12px")
     .call(d3.axisLeft(y));
 
-  // Gridlines for y-axis function
-  function make_y_gridlines() {		
-    return d3.axisLeft(y).ticks()
-    }
-
    // Add the Y gridlines
   svg.append("g")			
     .attr("class", "grid")
-    .call(make_y_gridlines()
+    .call(addYGridlines()
     .tickSize(-width)
     .tickFormat(""));
 
@@ -123,10 +117,10 @@ d3.csv(csv).then( function(data) {
   // Add the lines
   const line = d3.line()
   .x(d => x(+d.round))
-  .y(d => y(+d.score));
+  .y(d => y(+d.score_sum));
   
   const lines = svg.selectAll("myLines")
-    .data(dataReady)
+    .data(graphData)
     .join("path")
     .attr("d", d => line(d.values))
     .attr("stroke", d => myColor(d.name))
@@ -137,7 +131,7 @@ d3.csv(csv).then( function(data) {
   // const points = svg
   // // First we need to enter in a group
   // .selectAll("myDots")
-  // .data(dataReady)
+  // .data(graphData)
   // .join('g')
   //   .style("fill", d => myColor(d.name))
   // // Second we need to enter in the 'values' part of this group
@@ -149,57 +143,67 @@ d3.csv(csv).then( function(data) {
   //   .attr("r", 3)
   //   .attr("stroke", "white")
 
-// Add a legend at the end of each line
-const legend = svg.selectAll("myLabels")
-  .data(dataReady)
-  .join('g')
-    .append("text")
-      .datum(d => { return {name: d.name, value: d.values[d.values.length - 1]}; }) // keep only the last value of each round series
-      .attr("transform",d => `translate(${x(d.value.round)},${y(d.value.score)})`) // Put the text at the position of the last point
-      .attr("x", 12) //d => {if(d.name === "jake"){return 55}else {return 12}}) // shift the text a bit more right
-      .text(d => d.name)
-      .style("fill", d => myColor(d.name))
-      .style("font-size", "15px")
-      .style("border", "solid")
-      // Add on click function to toggle the opacity of each legend.
-      .on("click", (d,i) => {
+  // Add a legend at the end of each line
+  const legend = svg.selectAll("myLabels")
+    .data(graphData)
+    .join('g')
+      .append("text")
+        .datum(d => { return {name: d.name, value: d.values[d.values.length - 1]}; }) // keep only the last value of each round series
+        .attr("transform",d => `translate(${x(d.value.round)},${y(d.value.score_sum)})`) // Put the text at the position of the last point
+        .attr("x", 12) //d => {if(d.name === "jake"){return 55}else {return 12}}) // shift the text a bit more right
+        .text(d => d.name)
+        .style("fill", d => myColor(d.name))
+        .style("font-size", "15px")
+        .style("border", "solid")
+        // Add on click function to toggle the opacity of each legend.
+        .on("click", (d,i) => {
 
-        // Get legend names
-        const legendNames = legend.selectAll("g")._parents;
-        let legendSelect = null;
-        for (let idx = 0; idx < legendNames.length; idx++) {
-          if (i.name === legendNames[idx].innerHTML) {
-            legendSelect = legendNames[idx];
-            break
+          // Get legend names
+          const legendNames = legend.selectAll("g")._parents;
+          let legendSelect = null;
+          for (let idx = 0; idx < legendNames.length; idx++) {
+            if (i.name === legendNames[idx].innerHTML) {
+              legendSelect = legendNames[idx];
+              break
+            }
           }
-        }
 
-        // Get line names
-        const lineNames = lines.selectAll("path")._parents;
-        let lineSelect = null;
-        for (let idx = 0; idx < lineNames.length; idx++) {
-          if (myColor(i.name) === lineNames[idx].attributes.stroke.value) {
-            lineSelect = lineNames[idx];
-            break
+          // Get line names
+          const lineNames = lines.selectAll("path")._parents;
+          let lineSelect = null;
+          for (let idx = 0; idx < lineNames.length; idx++) {
+            if (myColor(i.name) === lineNames[idx].attributes.stroke.value) {
+              lineSelect = lineNames[idx];
+              break
+            }
           }
-        }
-        
-        // Toggle legend opacity
-        d3.select(legendSelect).style("opacity", () => {
-          if (d3.select(legendSelect).style("opacity") === "1") {
-            return "0.33";
-          } else {
-            return "1";
-          }
+          
+          // Toggle legend opacity
+          d3.select(legendSelect).style("opacity", () => {
+            if (d3.select(legendSelect).style("opacity") === "1") { return "0.33";  } else {  return "1"; }}
+            );
+
+          // Toggle line opacity
+          d3.select(lineSelect).style("opacity", () => {
+            if (d3.select(lineSelect).style("opacity") === "1") { return "0"; } else {  return "1"; }}
+            );
         });
 
-        // Toggle line opacity
-        d3.select(lineSelect).style("opacity", () => {
-          if (d3.select(lineSelect).style("opacity") === "1") {
-            return "0";
-          } else {
-            return "1";
-          }
-        });
-      });
+  // const andyScores = [];
+  // for (let idx = 0; idx < graphData[0].values.length; idx++) {
+  //   andyScores.push(graphData[0].values[idx].score);
+  // }
+
+  // // Create table html element
+  // document.querySelector('#app').appendChild(document.createElement('table'));
+  // const table = d3.select('table');
+
+  // // Create header row
+  // table.append("tr");
+  // for (let idx = 0; idx < allNames.length; idx++) {
+  //   d3.select('tr').append("th").html(`<th>${allNames[idx]}</th>`);
+  // }
+
+  // // Create andy scores column
+  // table.append('tr').append('td').html(`${d3.max(andyScores)}`);
 });
