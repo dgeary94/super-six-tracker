@@ -189,21 +189,49 @@ d3.csv(csv).then( function(data) {
             );
         });
 
-  // const andyScores = [];
-  // for (let idx = 0; idx < graphData[0].values.length; idx++) {
-  //   andyScores.push(graphData[0].values[idx].score);
-  // }
+  const individualScores = [];
+  console.log(graphData);
+  for (let i = 0; i < graphData.length; i++) {
+    let scores = [];
+    for (let j = 0; j < graphData[i].values.length; j++) {
+      scores.push(graphData[i].values[j].score);
+    }
+    individualScores.push(scores);
+  }
 
-  // // Create table html element
-  // document.querySelector('#app').appendChild(document.createElement('table'));
-  // const table = d3.select('table');
+  // Create table html element
+  document.querySelector('#app').innerHTML += `<table width=${width}>
+    <thead>
+        <tr>
+          <th></th>
+          <th>Andy</th>
+          <th>David</th>
+          <th>Jake</th>
+          <th>James</th>
+          <th>Jonnie</th>
+          <th>Josh</th>
+          <th>Sam</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr id="max-round-score">
+          <td>Max Round Score</td>
+        </tr>
+        <tr id="avg-round-score">
+        <td>Avg Round Score</td>
+      </tr>
+    </tbody>
+    </table>`;
 
-  // // Create header row
-  // table.append("tr");
-  // for (let idx = 0; idx < allNames.length; idx++) {
-  //   d3.select('tr').append("th").html(`<th>${allNames[idx]}</th>`);
-  // }
+    const maxRound = document.getElementById('max-round-score');
+    const avgRound = document.getElementById('avg-round-score');
+    
+    for (let idx = 0; idx < individualScores.length; idx++) {
+      maxRound.innerHTML += `<td>${d3.max(individualScores[idx])}</td>`
+    }
 
-  // // Create andy scores column
-  // table.append('tr').append('td').html(`${d3.max(andyScores)}`);
+    for (let idx = 0; idx < individualScores.length; idx++) {
+      avgRound.innerHTML += `<td>${Math.round(d3.mean(individualScores[idx]) * 10)/10}</td>`
+    }
+
 });
