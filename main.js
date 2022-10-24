@@ -6,7 +6,7 @@ document.querySelector('#app').innerHTML = `
     <h1>&#9917 Super 6 League Tracker</h1>
     <h2>QUE SERA SERA, WE'RE GOING TO WORMBELLY</h2>
     <p>Click each name to toggle data series.</p>
-    <div id="graph"><div>`
+    <div id="graph"><div>`;
 
 // Set the dimensions and margins of the graph
 const margin = {top: 40, right: 90, bottom: 40, left: 80};
@@ -34,6 +34,30 @@ function setSize(width, height) {
 }
 
 [width, height] = setSize();
+
+ // // Create table html element
+ document.querySelector('#app').innerHTML += `<table width=${width}>
+ <thead>
+     <tr>
+       <th></th>
+       <th>Andy</th>
+       <th>David</th>
+       <th>Jake</th>
+       <th>James</th>
+       <th>Jonnie</th>
+       <th>Josh</th>
+       <th>Sam</th>
+     </tr>
+ </thead>
+ <tbody>
+     <tr id="max-round-score">
+       <td>Max Round Score</td>
+     </tr>
+     <tr id="avg-round-score">
+     <td>Avg Round Score</td>
+   </tr>
+ </tbody>
+ </table>`;
 
 // Append the svg object to the body of the page
 const svg = d3.select("#graph")
@@ -158,6 +182,7 @@ d3.csv(csv).then( function(data) {
         // Add on click function to toggle the opacity of each legend.
         .on("click", (d,i) => {
 
+          //console.log('Clicked!');
           // Get legend names
           const legendNames = legend.selectAll("g")._parents;
           let legendSelect = null;
@@ -190,7 +215,6 @@ d3.csv(csv).then( function(data) {
         });
 
   const individualScores = [];
-  console.log(graphData);
   for (let i = 0; i < graphData.length; i++) {
     let scores = [];
     for (let j = 0; j < graphData[i].values.length; j++) {
@@ -199,39 +223,15 @@ d3.csv(csv).then( function(data) {
     individualScores.push(scores);
   }
 
-  // Create table html element
-  document.querySelector('#app').innerHTML += `<table width=${width}>
-    <thead>
-        <tr>
-          <th></th>
-          <th>Andy</th>
-          <th>David</th>
-          <th>Jake</th>
-          <th>James</th>
-          <th>Jonnie</th>
-          <th>Josh</th>
-          <th>Sam</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr id="max-round-score">
-          <td>Max Round Score</td>
-        </tr>
-        <tr id="avg-round-score">
-        <td>Avg Round Score</td>
-      </tr>
-    </tbody>
-    </table>`;
+  const maxRound = document.getElementById('max-round-score');
+  const avgRound = document.getElementById('avg-round-score');
+  
+  for (let idx = 0; idx < individualScores.length; idx++) {
+    maxRound.innerHTML += `<td>${d3.max(individualScores[idx])}</td>`
+  };
 
-    const maxRound = document.getElementById('max-round-score');
-    const avgRound = document.getElementById('avg-round-score');
-    
-    for (let idx = 0; idx < individualScores.length; idx++) {
-      maxRound.innerHTML += `<td>${d3.max(individualScores[idx])}</td>`
-    }
-
-    for (let idx = 0; idx < individualScores.length; idx++) {
-      avgRound.innerHTML += `<td>${Math.round(d3.mean(individualScores[idx]) * 10)/10}</td>`
-    }
+  for (let idx = 0; idx < individualScores.length; idx++) {
+    avgRound.innerHTML += `<td>${Math.round(d3.mean(individualScores[idx]) * 10)/10}</td>`
+  };
 
 });
