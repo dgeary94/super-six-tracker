@@ -26,7 +26,6 @@ function setSize(width, height) {
       height = defaultHeight;
       width = defaultWidth;}
     else { //mobile
-         //margin.left = 20;
          width = currentWidth;
          height = width/defaultRatio;
         }
@@ -166,6 +165,8 @@ d3.csv(csv).then( function(data) {
   //   .attr("cy", d => y(d.score))
   //   .attr("r", 3)
   //   .attr("stroke", "white")
+  
+  //console.log(graphData);
 
   // Add a legend at the end of each line
   const legend = svg.selectAll("myLabels")
@@ -174,7 +175,8 @@ d3.csv(csv).then( function(data) {
       .append("text")
         .datum(d => { return {name: d.name, value: d.values[d.values.length - 1]}; }) // keep only the last value of each round series
         .attr("transform",d => `translate(${x(d.value.round)},${y(d.value.score_sum)})`) // Put the text at the position of the last point
-        .attr("x", d => {if(d.name === "jake" || d.name === "david"){return 52}else {return 12}}) // shift the text a bit more right
+        //.attr("transform",(d,i) => `translate(${x(d.value.round)},${y(d3.max(data, function(d) { return +d.score_sum; }) - (i*20) - 10)})`) // Put the text at the position of the last point
+        .attr("x",d => {if(d.name === "jake" || d.name === "david"){return 54}else {return 12}}) // shift the text a bit more right
         .text(d => d.name)
         .style("fill", d => myColor(d.name))
         .style("font-size", "15px")
