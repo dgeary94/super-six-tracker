@@ -50,10 +50,11 @@ h2 {
 table {
   border: #213547 solid;
   margin: 2rem auto 2rem auto;
+  border-collapse: collapse;
 }
 
 thead {
-
+  background-color: #e8e8e6;
 }
 
 #app {
