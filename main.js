@@ -50,11 +50,13 @@ function setSize(width, height) {
  </thead>
  <tbody>
      <tr id="max-round-score">
-       <td>Max Round Score</td>
+       <td>Best Round</td>
      </tr>
      <tr id="avg-round-score">
-     <td>Avg Round Score</td>
-   </tr>
+     <td>Average Round</td>
+     </tr>
+     <tr id="standard-dev">
+     <td>Standard Deviation</td>
  </tbody>
  </table>`;
 
@@ -130,7 +132,7 @@ d3.csv(csv).then( function(data) {
     .attr("text-anchor", "center")
     .attr("x", -margin.left)
     .attr("y", height/2)
-    .text("Score");
+    .text("Points");
 
   // Creating the colour scheme
   const myColor = d3.scaleOrdinal()
@@ -227,6 +229,7 @@ d3.csv(csv).then( function(data) {
 
   const maxRound = document.getElementById('max-round-score');
   const avgRound = document.getElementById('avg-round-score');
+  const stDev = document.getElementById('standard-dev');
   
   for (let idx = 0; idx < individualScores.length; idx++) {
     maxRound.innerHTML += `<td>${d3.max(individualScores[idx])}</td>`
@@ -234,6 +237,10 @@ d3.csv(csv).then( function(data) {
 
   for (let idx = 0; idx < individualScores.length; idx++) {
     avgRound.innerHTML += `<td>${Math.round(d3.mean(individualScores[idx]) * 10)/10}</td>`
+  };
+
+  for (let idx = 0; idx < individualScores.length; idx++) {
+    stDev.innerHTML += `<td>${Math.round(d3.deviation(individualScores[idx]) * 10)/10}</td>`
   };
 
 });
