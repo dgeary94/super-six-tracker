@@ -1,12 +1,20 @@
 import './style.css'
 import csv from "./super-six-scores.csv"
+import imgURL from './football.svg'
+//const imgURL = new URL('./football.png', import.meta.url).href;
 
 // Insert DOM elements
 document.querySelector('#app').innerHTML = `
-    <h1>&#9917 Super 6 League Tracker</h1>
-    <h2>QUE SERA SERA, WE'RE GOING TO WORMBELLY</h2>
-    <p>Click each name to toggle data series.</p>
-    <div id="graph"><div>`;
+  <div id="title">
+    <img id="football" src="" alt="Logo" width="60" height="60"/>
+    <h1>Super 6 League Tracker</h1>
+  </div>
+  <h2>QUE SERA SERA, WE'RE GOING TO WORMBELLY</h2>
+  <p>Click each name to toggle data series.</p>
+  <div id="graph"><div>`;
+
+// Add football image
+document.getElementById('football').src = imgURL;
 
 // Set the dimensions and margins of the graph
 const margin = {top: 40, right: 90, bottom: 40, left: 80};
@@ -95,7 +103,8 @@ d3.csv(csv).then( function(data) {
   svg.append("g")
     .attr("transform", `translate(0, ${height})`)
     .style("font-size", "12px")
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(x)
+    .ticks(d3.max(data, function(d) {return +d.round})/2));
 
   // Add the X gridlines
   svg.append("g")			
@@ -103,7 +112,8 @@ d3.csv(csv).then( function(data) {
     .attr("transform", "translate(0," + height + ")")
     .call(addXGridlines()
     .tickSize(-height)
-    .tickFormat(""));
+    .tickFormat("")
+    .ticks(d3.max(data, function(d) {return +d.round})/2));
 
   // Add X axis label
   svg.append("text")
@@ -151,24 +161,6 @@ d3.csv(csv).then( function(data) {
     .attr("stroke", d => myColor(d.name))
     .style("stroke-width", 2)
     .style("fill", "none");
-
-  // Add the points
-  // const points = svg
-  // // First we need to enter in a group
-  // .selectAll("myDots")
-  // .data(graphData)
-  // .join('g')
-  //   .style("fill", d => myColor(d.name))
-  // // Second we need to enter in the 'values' part of this group
-  // .selectAll("myPoints")
-  // .data(d => d.values)
-  // .join("circle")
-  //   .attr("cx", d => x(d.round))
-  //   .attr("cy", d => y(d.score))
-  //   .attr("r", 3)
-  //   .attr("stroke", "white")
-  
-  //console.log(graphData);
 
   // Add a legend at the end of each line
   const legend = svg.selectAll("myLabels")
