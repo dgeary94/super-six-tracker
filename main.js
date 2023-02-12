@@ -129,6 +129,7 @@ d3.csv(csv).then( function(data) {
   svg.append("g")
     .style("font-size", "12px")
     .call(d3.axisLeft(y));
+    //.ticks(d3.max(data, function(d) { return +d.score_sum })/20));
 
    // Add the Y gridlines
   svg.append("g")			
@@ -136,6 +137,7 @@ d3.csv(csv).then( function(data) {
     .call(addYGridlines()
     .tickSize(-width)
     .tickFormat(""));
+    //.ticks(d3.max(data, function(d) { return +d.score_sum })/40));
 
   // Add Y axis label
   svg.append("text")
