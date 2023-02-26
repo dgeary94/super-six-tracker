@@ -1,9 +1,8 @@
 import './style.css'
 import csv from "./super-six-scores.csv"
 import imgURL from './football.svg'
-//const imgURL = new URL('./football.png', import.meta.url).href;
 
-// Insert DOM elements
+// Insert initial DOM elements
 document.querySelector('#app').innerHTML = `
   <div id="title">
     <img id="football" src="" alt="Logo" width="60" height="60"/>
@@ -42,7 +41,7 @@ function setSize(width, height) {
 
 [width, height] = setSize();
 
- // // Create table html element
+ // // Create and add table html element
  document.querySelector('#app').innerHTML += `<table width=${width}>
  <thead>
      <tr>
@@ -81,6 +80,12 @@ d3.csv(csv).then( function(data) {
 
   const allNames = ["andy", "david", "jake", "james", "jonnie", "josh", "sam"];
 
+  // Get the data from the last 10 rounds
+  //const lastTen = data.slice(-70);
+  // Changing the data variable to lastTen gives only the last 1o rounds.
+  // TODO Implement a toggle button and some conditional logic to set lastTen as data source.
+
+
   // Reformat the data: we need an array of arrays of {x, y} tuples
   const graphData = allNames.map( function(name) { // .map allows to do something for each element of the list
     return {
@@ -106,8 +111,6 @@ d3.csv(csv).then( function(data) {
     .call(d3.axisBottom(x)
     .ticks(d3.max(data, function(d) {return +d.round})/2));
 
-  console.log(graphData);
-
   // Add the X gridlines
   svg.append("g")			
     .attr("class", "grid")
@@ -126,20 +129,21 @@ d3.csv(csv).then( function(data) {
 
   // Add Y axis
   const y = d3.scaleLinear()
-    .domain([0, Math.ceil(d3.max(data, function(d) { return +d.score_sum; })/10)*10])
+    //.domain([0, Math.ceil(d3.max(data, function(d) { return +d.score_sum; })/10)*10])
+    .domain([d3.min(data, function(d) {return +d.score_sum}), Math.ceil(d3.max(data, function(d) { return +d.score_sum; })/10)*10])
     .range([height, 0]);
   svg.append("g")
     .style("font-size", "0.75rem")
-    .call(d3.axisLeft(y));
-    //.ticks(d3.max(data, function(d) { return +d.score_sum })/20));
+    .call(d3.axisLeft(y)
+    .ticks(d3.max(data, function(d) { return +d.score_sum })/20));
 
    // Add the Y gridlines
   svg.append("g")			
     .attr("class", "grid")
     .call(addYGridlines()
     .tickSize(-width)
-    .tickFormat(""));
-    //.ticks(d3.max(data, function(d) { return +d.score_sum })/40));
+    .tickFormat("")
+    .ticks(d3.max(data, function(d) { return +d.score_sum })/20));
 
   // Add Y axis label
   svg.append("text")
