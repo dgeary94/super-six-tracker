@@ -170,53 +170,78 @@ d3.csv(csv).then( function(data) {
     .style("stroke-width", 2)
     .style("fill", "none");
 
-  // Add a legend at the end of each line
-  const legend = svg.selectAll("myLabels")
-    .data(graphData)
-    .join('g')
-      .append("text")
-        .datum(d => { return {name: d.name, value: d.values[d.values.length - 1]}; }) // keep only the last value of each round series
-        .attr("transform",d => `translate(${x(d.value.round)},${y(d.value.score_sum)})`) // Put the text at the position of the last point
-        //.attr("transform",(d,i) => `translate(${x(d.value.round)},${y(d3.max(data, function(d) { return +d.score_sum; }) - (i*20) - 10)})`) // Put the text at the position of the last point
-        .attr("x",d => {if(d.name === "sam"){return 52}else {return 12}}) // shift the text a bit more right
-        .text(d => d.name)
-        .style("fill", d => myColor(d.name))
-        .style("font-size", "15px")
-        .style("border", "solid")
-        // Add on click function to toggle the opacity of each legend.
-        .on("click", (d,i) => {
+  // Create legend dots
+  const dots = svg.selectAll("myDots")
+    .data(allNames)
+    .enter()
+    .append("circle")
+      .attr("cx", function(d,i) { if(width === defaultWidth){ return 0 + i*100 } else { return 0 + i*62 } })
+      .attr("cy", -20)
+      .attr("r", 5)
+      .style("fill", d => myColor(d));
 
-          //console.log('Clicked!');
-          // Get legend names
-          const legendNames = legend.selectAll("g")._parents;
-          let legendSelect = null;
-          for (let idx = 0; idx < legendNames.length; idx++) {
-            if (i.name === legendNames[idx].innerHTML) {
-              legendSelect = legendNames[idx];
-              break
-            }
+  // Add legend labels for each name next to each dot.
+  const labels = svg.selectAll("myLabels")
+    .data(allNames)
+    .enter()
+    .append("text")
+      .attr("x", function(d,i) { if(width === defaultWidth){ return 10 + i*100 } else { return 8 + i*62 } })
+      .attr("y", -15)
+      .style("fill", d => myColor(d))
+      .text(function(d){ return d})
+      .attr("text-anchor", "left")
+      .style("alignment-baseline", "middle")
+      // Add on click function to toggle the opacity of each legend.
+      .on("click", (d,i) => {
+
+        // Get legend names
+        const legendNames = labels.selectAll("g")._parents;
+        let legendSelect = null;
+        for (let idx = 0; idx < legendNames.length; idx++) {
+          if (i === legendNames[idx].innerHTML) {
+            legendSelect = legendNames[idx];
+            break
           }
+        }
 
-          // Get line names
-          const lineNames = lines.selectAll("path")._parents;
-          let lineSelect = null;
-          for (let idx = 0; idx < lineNames.length; idx++) {
-            if (myColor(i.name) === lineNames[idx].attributes.stroke.value) {
-              lineSelect = lineNames[idx];
-              break
-            }
+        // Get line names
+        const lineNames = lines.selectAll("path")._parents;
+        let lineSelect = null;
+        for (let idx = 0; idx < lineNames.length; idx++) {
+          if (myColor(i) === lineNames[idx].attributes.stroke.value) {
+            lineSelect = lineNames[idx];
+            break
           }
-          
-          // Toggle legend opacity
-          d3.select(legendSelect).style("opacity", () => {
-            if (d3.select(legendSelect).style("opacity") === "1") { return "0.33";  } else {  return "1"; }}
-            );
+        }
 
-          // Toggle line opacity
-          d3.select(lineSelect).style("opacity", () => {
-            if (d3.select(lineSelect).style("opacity") === "1") { return "0"; } else {  return "1"; }}
-            );
-        });
+        // Get dots
+        // const dotNames = dots.selectAll("g")._parents;
+        // let dotSelect = null;
+        // for (let idx = 0; idx < dotNames.length; idx++) {
+        //   console.log(dotNames[idx].attributes.style.value);
+        //   if (`fill: ${d3.color(myColor(i)).formatRgb()};` === dotNames[idx].attributes.style.value) {
+        //     dotSelect = dotNames[idx];
+        //     console.log(dotSelect);
+        //     break
+        //   }
+        // }
+        
+        // Toggle legend opacity
+        d3.select(legendSelect).style("opacity", () => {
+          if (d3.select(legendSelect).style("opacity") === "1") { return "0.33";  } else {  return "1"; }}
+          );
+
+        // Toggle line opacity
+        d3.select(lineSelect).style("opacity", () => {
+          if (d3.select(lineSelect).style("opacity") === "1") { return "0"; } else {  return "1"; }}
+          );
+
+        // Toggle dot opacity
+        // d3.select(dotSelect).style("opacity", () => {
+        //   console.log(d3.select(dotSelect).style("opacity"));
+        //   if (d3.select(dotSelect).style("opacity") === "1") { return "0.33"; } else {  return "1"; }
+        //   });
+      });
 
   const individualScores = [];
   for (let i = 0; i < graphData.length; i++) {

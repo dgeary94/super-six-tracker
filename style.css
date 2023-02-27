@@ -32,9 +32,7 @@ body {
 }
 
 p {
-  margin: 0;
-  position: relative;
-  top: 40px;
+  margin: 2rem 0 1rem 0;
 }
 
 h1 {
