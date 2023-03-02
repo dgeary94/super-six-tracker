@@ -175,7 +175,7 @@ d3.csv(csv).then( function(data) {
     .data(allNames)
     .enter()
     .append("circle")
-      .attr("cx", function(d,i) { if(width === defaultWidth){ return 0 + i*100 } else { return 0 + i*62 } })
+      .attr("cx", function(d,i) { return width === defaultWidth ? 0 + i*100 : 0 + i*62 })
       .attr("cy", -20)
       .attr("r", 5)
       .style("fill", d => myColor(d));
@@ -185,7 +185,7 @@ d3.csv(csv).then( function(data) {
     .data(allNames)
     .enter()
     .append("text")
-      .attr("x", function(d,i) { if(width === defaultWidth){ return 10 + i*100 } else { return 8 + i*62 } })
+      .attr("x", function(d,i) { return width === defaultWidth ? 10 + i*100 : 8 + i*62 })
       .attr("y", -15)
       .style("fill", d => myColor(d))
       .text(function(d){ return d})
@@ -228,13 +228,13 @@ d3.csv(csv).then( function(data) {
         
         // Toggle legend opacity
         d3.select(legendSelect).style("opacity", () => {
-          if (d3.select(legendSelect).style("opacity") === "1") { return "0.33";  } else {  return "1"; }}
-          );
+          return d3.select(legendSelect).style("opacity") === "1" ? "0.33" : "1";
+        });
 
         // Toggle line opacity
         d3.select(lineSelect).style("opacity", () => {
-          if (d3.select(lineSelect).style("opacity") === "1") { return "0"; } else {  return "1"; }}
-          );
+          return d3.select(lineSelect).style("opacity") === "1" ? "0" : "1";
+        });
 
         // Toggle dot opacity
         // d3.select(dotSelect).style("opacity", () => {
