@@ -16,7 +16,7 @@ document.querySelector('#app').innerHTML = `
 document.getElementById('football').src = imgURL;
 
 // Set the dimensions and margins of the graph
-const margin = {top: 40, right: 90, bottom: 40, left: 80};
+const margin = {top: 40, right: 80, bottom: 40, left: 80};
 const defaultWidth = 800 - margin.left - margin.right;
 const defaultHeight = 500 - margin.top - margin.bottom;
 const defaultRatio = defaultWidth / defaultHeight;
@@ -72,6 +72,7 @@ const svg = d3.select("#graph")
   .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
+    //.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
     .append("g")
     .attr("transform",`translate(${margin.left}, ${margin.top})`);
 
@@ -215,16 +216,15 @@ d3.csv(csv).then( function(data) {
         }
 
         // Get dots
-        // const dotNames = dots.selectAll("g")._parents;
-        // let dotSelect = null;
-        // for (let idx = 0; idx < dotNames.length; idx++) {
-        //   console.log(dotNames[idx].attributes.style.value);
-        //   if (`fill: ${d3.color(myColor(i)).formatRgb()};` === dotNames[idx].attributes.style.value) {
-        //     dotSelect = dotNames[idx];
-        //     console.log(dotSelect);
-        //     break
-        //   }
-        // }
+        const dotNames = dots.selectAll("g")._parents;
+        let dotSelect = null;
+        for (let idx = 0; idx < dotNames.length; idx++) {
+          let computedStyle = window.getComputedStyle(dotNames[idx]);
+          if (`${d3.color(myColor(i)).formatRgb()}` === computedStyle.getPropertyValue("fill")) {
+            dotSelect = dotNames[idx];
+            break
+          }
+        }
         
         // Toggle legend opacity
         d3.select(legendSelect).style("opacity", () => {
@@ -237,10 +237,9 @@ d3.csv(csv).then( function(data) {
         });
 
         // Toggle dot opacity
-        // d3.select(dotSelect).style("opacity", () => {
-        //   console.log(d3.select(dotSelect).style("opacity"));
-        //   if (d3.select(dotSelect).style("opacity") === "1") { return "0.33"; } else {  return "1"; }
-        //   });
+        d3.select(dotSelect).style("opacity", () => {
+          if (window.getComputedStyle(dotSelect).getPropertyValue("opacity") === "1") { return "0.33"; } else {  return "1"; }
+          });
       });
 
   const individualScores = [];
