@@ -188,6 +188,7 @@ d3.csv(csv).then( function(data) {
     .append("text")
       .attr("x", function(d,i) { return width === defaultWidth ? 10 + i*100 : 8 + i*62 })
       .attr("y", -15)
+      .attr("class", "legend-label")
       .style("fill", d => myColor(d))
       .text(function(d){ return d})
       .attr("text-anchor", "left")
