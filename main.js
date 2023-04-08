@@ -33,8 +33,8 @@ function setSize(width, height) {
       height = defaultHeight;
       width = defaultWidth;}
     else { // For mobile
-         width = currentWidth;
-         height = width/defaultRatio;
+         width = currentWidth + margin.left + margin.right;
+         height = width/(defaultRatio);
         }
         return [width, height]
 }
@@ -136,7 +136,7 @@ d3.csv(csv).then( function(data) {
   svg.append("g")
     .style("font-size", "0.75rem")
     .call(d3.axisLeft(y)
-    .ticks(d3.max(data, function(d) { return +d.score_sum })/20));
+    .ticks(width === defaultWidth ? d3.max(data, function(d) { return +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum })/40));
 
    // Add the Y gridlines
   svg.append("g")			
@@ -144,7 +144,7 @@ d3.csv(csv).then( function(data) {
     .call(addYGridlines()
     .tickSize(-width)
     .tickFormat("")
-    .ticks(d3.max(data, function(d) { return +d.score_sum })/20));
+    .ticks(width === defaultWidth ? d3.max(data, function(d) { return +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum })/10));
 
   // Add Y axis label
   svg.append("text")
@@ -176,7 +176,7 @@ d3.csv(csv).then( function(data) {
     .data(allNames)
     .enter()
     .append("circle")
-      .attr("cx", function(d,i) { return width === defaultWidth ? 0 + i*100 : 0 + i*62 })
+      .attr("cx", function(d,i) { return width === defaultWidth ? 0 + i*100 : 0 + i*80 })
       .attr("cy", -20)
       .attr("r", 5)
       .style("fill", d => myColor(d));
@@ -186,7 +186,7 @@ d3.csv(csv).then( function(data) {
     .data(allNames)
     .enter()
     .append("text")
-      .attr("x", function(d,i) { return width === defaultWidth ? 10 + i*100 : 8 + i*62 })
+      .attr("x", function(d,i) { return width === defaultWidth ? 10 + i*100 : 8 + i*80 })
       .attr("y", -15)
       .attr("class", "legend-label")
       .style("fill", d => myColor(d))
