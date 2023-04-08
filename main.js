@@ -33,7 +33,7 @@ function setSize(width, height) {
       height = defaultHeight;
       width = defaultWidth;}
     else { // For mobile
-         width = currentWidth + margin.left + margin.right;
+         width = currentWidth + margin.left;
          height = width/(defaultRatio);
         }
         return [width, height]
@@ -176,7 +176,7 @@ d3.csv(csv).then( function(data) {
     .data(allNames)
     .enter()
     .append("circle")
-      .attr("cx", function(d,i) { return width === defaultWidth ? 0 + i*100 : 0 + i*80 })
+      .attr("cx", function(d,i) { return width === defaultWidth ? 0 + i*100 : 0 + i*70 })
       .attr("cy", -20)
       .attr("r", 5)
       .style("fill", d => myColor(d));
@@ -186,7 +186,7 @@ d3.csv(csv).then( function(data) {
     .data(allNames)
     .enter()
     .append("text")
-      .attr("x", function(d,i) { return width === defaultWidth ? 10 + i*100 : 8 + i*80 })
+      .attr("x", function(d,i) { return width === defaultWidth ? 10 + i*100 : 8 + i*70 })
       .attr("y", -15)
       .attr("class", "legend-label")
       .style("fill", d => myColor(d))
