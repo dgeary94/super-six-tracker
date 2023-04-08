@@ -149,8 +149,9 @@ d3.csv(csv).then( function(data) {
   // Add Y axis label
   svg.append("text")
     .attr("text-anchor", "center")
-    .attr("x", -margin.left)
-    .attr("y", height/2)
+    .attr("transform", width === defaultWidth ? "rotate(0)": "rotate(-90)")
+    .attr("x", width === defaultWidth ? -margin.left : -height/2)
+    .attr("y", width === defaultWidth ? height/2 : -margin.top)
     .text("Points");
 
   // Creating the colour scheme
