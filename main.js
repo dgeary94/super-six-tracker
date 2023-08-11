@@ -9,6 +9,13 @@ document.querySelector('#app').innerHTML = `
     <h1>Super 6 League Tracker</h1>
   </div>
   <h2>QUE SERA SERA, WE'RE GOING TO WORMBELLY</h2>
+  <div id="seasons">
+    <label for="season">Season:</label>
+    <select name="season" id="season-select">
+      <option value="22-23" selected>2022/2023</option>
+      <option value="23-24">2023/2024</option>
+    </select>
+  </div>
   <p>Click each name to toggle data series.</p>
   <div id="graph"><div>`;
 
@@ -41,43 +48,34 @@ function setSize(width, height) {
 
 [width, height] = setSize();
 
- // // Create and add table html element
- document.querySelector('#app').innerHTML += `<table width=${width}>
- <thead>
-     <tr>
-       <th></th>
-       <th>Andy</th>
-       <th>David</th>
-       <th>Jake</th>
-       <th>James</th>
-       <th>Jonnie</th>
-       <th>Josh</th>
-       <th>Sam</th>
-     </tr>
- </thead>
- <tbody>
-     <tr id="max-round-score">
-       <td>Best Round</td>
-     </tr>
-     <tr id="avg-round-score">
-     <td>Average Round</td>
-     </tr>
-     <tr id="standard-dev">
-     <td>Standard Deviation</td>
- </tbody>
- </table>`;
+// Add event listener to season select toggle
+const seasonToggle = document.getElementById('season-select');
+seasonToggle.addEventListener('change', updateGraph);
 
-// Append the svg object to the body of the page
-const svg = d3.select("#graph")
-  .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    //.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
-    .append("g")
-    .attr("transform",`translate(${margin.left}, ${margin.top})`);
+// Update graph
+updateGraph();
 
-// Read data from csv file
-d3.csv(csv).then( function(data) {
+function updateGraph() {
+  // Clear svg element
+  document.getElementById('graph').innerHTML = '';
+
+  // Get current dropdown value
+  const currentValue = seasonToggle.value;
+  console.log(currentValue);
+
+  if (currentValue === '22-23') {
+    console.log("We have data for that!");
+    // Append the svg object to the body of the page
+    const svg = d3.select("#graph")
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      //.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+      .append("g")
+      .attr("transform",`translate(${margin.left}, ${margin.top})`);
+
+    // Read data from csv file
+    d3.csv(csv).then( function(data) {
 
   const allNames = ["andy", "david", "jake", "james", "jonnie", "josh", "sam"];
 
@@ -244,11 +242,30 @@ d3.csv(csv).then( function(data) {
           });
       });
 
+    //updateTable(graphData);
+
+  });
+  } else {
+    console.log("We don't have data for that!");
+    // Append the svg object to the body of the page
+    const svg = d3.select("#graph")
+    .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      //.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+      .append("g")
+      .attr("transform",`translate(${margin.left}, ${margin.top})`)
+      .append("text").text("Coming soon!");
+  }
+}
+
+function updateTable(data) {
+
   const individualScores = [];
-  for (let i = 0; i < graphData.length; i++) {
+  for (let i = 0; i < data.length; i++) {
     let scores = [];
-    for (let j = 0; j < graphData[i].values.length; j++) {
-      scores.push(graphData[i].values[j].score);
+    for (let j = 0; j < data[i].values.length; j++) {
+      scores.push(data[i].values[j].score);
     }
     individualScores.push(scores);
   }
@@ -268,5 +285,31 @@ d3.csv(csv).then( function(data) {
   for (let idx = 0; idx < individualScores.length; idx++) {
     stDev.innerHTML += `<td>${Math.round(d3.deviation(individualScores[idx]) * 10)/10}</td>`
   };
+}
 
-});
+// HTML for the stats table.
+const statsTable =  `<p>Test</p>
+<table>
+<thead>
+    <tr>
+      <th></th>
+      <th>Andy</th>
+      <th>David</th>
+      <th>Jake</th>
+      <th>James</th>
+      <th>Jonnie</th>
+      <th>Josh</th>
+      <th>Sam</th>
+    </tr>
+</thead>
+<tbody>
+    <tr id="max-round-score">
+      <td>Best Round</td>
+    </tr>
+    <tr id="avg-round-score">
+    <td>Average Round</td>
+    </tr>
+    <tr id="standard-dev">
+    <td>Standard Deviation</td>
+</tbody>
+</table>`
