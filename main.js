@@ -142,7 +142,7 @@ function updateGraph() {
       .attr("transform", `translate(0, ${height})`)
       .style("font-size", "0.75rem")
       .call(d3.axisBottom(x)
-      .ticks(currentValue === '22-23' ? d3.max(data, function(d) {return +d.round })/2 : 1));
+      .ticks(currentValue === '22-23' ? d3.max(data, function(d) {return +d.round })/2 : d3.max(data, function(d) {return +d.s2_round })/2));
   
     // Add the X gridlines
     svg.append("g")			
