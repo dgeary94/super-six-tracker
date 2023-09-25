@@ -59,6 +59,7 @@ const statsTable =  `<table id="stats-table" width=${width * 1.2}>
     <tr id="max-round-score"></tr>
     <tr id="avg-round-score"></tr>
     <tr id="standard-dev"></tr>
+    <tr id="rounds-won"></tr>
 </tbody>
 </table>`;
 
@@ -101,7 +102,6 @@ function updateGraph() {
     let graphData = null;
     
     if (currentValue === '22-23') {
-      console.log("We have data for that!")
 
       // Reformat the data: we need an array of arrays of {x, y} tuples
       graphData = seasonOneNames.map( function(name) { // .map allows to do something for each element of the list
@@ -128,7 +128,7 @@ function updateGraph() {
         });
     }
 
-    console.log(graphData);
+    //console.log(graphData);
   
     // Functions for adding gridlines
     function addXGridlines() {  return d3.axisBottom(x).ticks();  }
@@ -293,11 +293,11 @@ function updateGraph() {
 }
 
 function updateTable(data) {
-  console.log("Update the table.");
+  //console.log("Update the table.");
 
   // Check if table already exists in the DOM
   if (document.getElementById('stats-table') === null) {
-    console.log("Table does not exist yet!");
+    //console.log("Table does not exist yet!");
 
     d3.select("#app").append("div").html(statsTable);
   }
@@ -312,11 +312,34 @@ function updateTable(data) {
     individualScores.push(scores);
   }
 
+  // Obtain the top score from each round
+  const topScore = [];
+  for (let i = 0; i < individualScores[0].length; i++) {
+    let currentTopScore = 0
+    for (let j = 0; j < individualScores.length; j++) {
+      if(individualScores[j][i] > currentTopScore) {
+        currentTopScore = individualScores[j][i]
+      }
+    }
+    topScore.push(currentTopScore);
+  }
+
+  let numberOfRoundsWon = new Array(individualScores.length).fill(0);
+  
+  for (let i = 0; i < topScore.length; i++) {
+    for (let j = 0; j < individualScores.length; j++) {
+      if(individualScores[j][i] === topScore[i]) {
+        numberOfRoundsWon[j] += 1;
+      }
+    }
+  }
+
   // Select DOM elements
   const nameHeader = document.getElementById('name-header');
   const maxRound = document.getElementById('max-round-score');
   const avgRound = document.getElementById('avg-round-score');
   const stDev = document.getElementById('standard-dev');
+  const roundsWon = document.getElementById('rounds-won');
 
   // Push names of data to a new array
   let names = [];
@@ -336,6 +359,7 @@ function updateTable(data) {
   maxRound.innerHTML = '';
   avgRound.innerHTML = '';
   stDev.innerHTML = '';
+  roundsWon.innerHTML = '';
 
   nameHeader.innerHTML = `<th></th>`;
   // Select name header and add <th> for all names
@@ -358,6 +382,11 @@ function updateTable(data) {
   stDev.innerHTML = `<td>Standard Deviation</td>`
   for (let idx = 0; idx < individualScores.length; idx++) {
     stDev.innerHTML += `<td>${Math.round(d3.deviation(individualScores[idx]) * 10)/10}</td>`
+  };
+
+  roundsWon.innerHTML = `<td>Rounds Won</td>`
+  for (let idx = 0; idx < individualScores.length; idx++) {
+    roundsWon.innerHTML += `<td>${numberOfRoundsWon[idx]}</td>`
   };
 }
 
