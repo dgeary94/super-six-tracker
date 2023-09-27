@@ -324,6 +324,7 @@ function updateTable(data) {
     topScore.push(currentTopScore);
   }
 
+  // Create empty array to store rounds won per player
   let numberOfRoundsWon = new Array(individualScores.length).fill(0);
   
   for (let i = 0; i < topScore.length; i++) {
