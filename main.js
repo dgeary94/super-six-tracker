@@ -142,7 +142,7 @@ function updateGraph() {
       .attr("transform", `translate(0, ${height})`)
       .style("font-size", "0.75rem")
       .call(d3.axisBottom(x)
-      .ticks(currentValue === '22-23' ? d3.max(data, function(d) {return +d.round })/2 : d3.max(data, function(d) {return +d.s2_round*2 })/2));
+      .ticks(currentValue === '22-23' ? d3.max(data, function(d) {return +d.round })/2 : d3.max(data, function(d) {return +d.s2_round })/2));
   
     // Add the X gridlines
     svg.append("g")			
@@ -151,7 +151,7 @@ function updateGraph() {
       .call(addXGridlines()
       .tickSize(-height)
       .tickFormat("")
-      .ticks(d3.max(data, function(d) {return currentValue === '22-23' ? +d.round : +d.s2_round*2})/2));
+      .ticks(d3.max(data, function(d) {return currentValue === '22-23' ? +d.round : +d.s2_round})/2));
   
     // Add X axis label
     svg.append("text")
