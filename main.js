@@ -168,7 +168,7 @@ function updateGraph() {
     svg.append("g")
       .style("font-size", "0.75rem")
       .call(d3.axisLeft(y)
-      .ticks(currentValue === '22-23' ? width === defaultWidth ? d3.max(data, function(d) { return +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum})/40 : 10));
+      .ticks(currentValue === '22-23' ? width === defaultWidth ? d3.max(data, function(d) { return +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum})/40 : 20));
   
       // Add the Y gridlines
     svg.append("g")			
@@ -176,7 +176,7 @@ function updateGraph() {
       .call(addYGridlines()
       .tickSize(-width)
       .tickFormat("")
-      .ticks(currentValue === '22-23' ? width === defaultWidth ? d3.max(data, function(d) { return  +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum })/10 : 10));
+      .ticks(currentValue === '22-23' ? width === defaultWidth ? d3.max(data, function(d) { return  +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum })/10 : 20));
   
     // Add Y axis label
     svg.append("text")
@@ -287,6 +287,9 @@ function updateGraph() {
         });
       
       updateTable(graphData);
+
+      // Add p tag to display rounds won explanation
+      d3.select("#app").append("p").html("* Includes rounds with multiple tied winners.");
   
     });
 
@@ -375,17 +378,17 @@ function updateTable(data) {
     maxRound.innerHTML += `<td>${d3.max(individualScores[idx])}</td>`
   };
 
-  avgRound.innerHTML = `<td>Average Round</td>`
+  avgRound.innerHTML = `<td>Avg Round</td>`
   for (let idx = 0; idx < individualScores.length; idx++) {
     avgRound.innerHTML += `<td>${Math.round(d3.mean(individualScores[idx]) * 10)/10}</td>`
   };
 
-  stDev.innerHTML = `<td>Standard Deviation</td>`
+  stDev.innerHTML = `<td>Std Dev</td>`
   for (let idx = 0; idx < individualScores.length; idx++) {
     stDev.innerHTML += `<td>${Math.round(d3.deviation(individualScores[idx]) * 10)/10}</td>`
   };
 
-  roundsWon.innerHTML = `<td>Rounds Won</td>`
+  roundsWon.innerHTML = `<td>Rounds Won<sup>*</sup></td>`
   for (let idx = 0; idx < individualScores.length; idx++) {
     roundsWon.innerHTML += `<td>${numberOfRoundsWon[idx]}</td>`
   };
