@@ -287,9 +287,6 @@ function updateGraph() {
         });
       
       updateTable(graphData);
-
-      // Add p tag to display rounds won explanation
-      d3.select("#app").append("p").html("* Includes rounds with multiple tied winners.");
   
     });
 
@@ -303,6 +300,9 @@ function updateTable(data) {
     //console.log("Table does not exist yet!");
 
     d3.select("#app").append("div").html(statsTable);
+
+    // Add p tag to display rounds won explanation
+    d3.select("#app").append("p").html("* Includes rounds with multiple tied winners.");
   }
 
   // Obtain individual scores for each participant
