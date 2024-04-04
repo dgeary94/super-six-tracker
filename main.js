@@ -168,7 +168,8 @@ function updateGraph() {
     svg.append("g")
       .style("font-size", "0.75rem")
       .call(d3.axisLeft(y)
-      .ticks(currentValue === '22-23' ? width === defaultWidth ? d3.max(data, function(d) { return +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum})/40 : 20));
+      //.ticks(currentValue === '22-23' ? width === defaultWidth ? d3.max(data, function(d) { return +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum})/40 : 20))
+      .ticks(width === defaultWidth ? d3.max(data, function(d) { return +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum})/40));
   
       // Add the Y gridlines
     svg.append("g")			
@@ -176,7 +177,8 @@ function updateGraph() {
       .call(addYGridlines()
       .tickSize(-width)
       .tickFormat("")
-      .ticks(currentValue === '22-23' ? width === defaultWidth ? d3.max(data, function(d) { return  +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum })/10 : 20));
+      //.ticks(currentValue === '22-23' ? width === defaultWidth ? d3.max(data, function(d) { return  +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum })/10 : 20))
+      .ticks(width === defaultWidth ? d3.max(data, function(d) { return  +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum })/10));
   
     // Add Y axis label
     svg.append("text")
