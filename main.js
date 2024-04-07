@@ -136,7 +136,7 @@ function updateGraph() {
   
     // Add X axis
     const x = d3.scaleLinear()
-      .domain(currentValue === '22-23' ? [d3.min(data, function(d) {return +d.round}),d3.max(data, function(d) {return +d.round})] : [1,d3.max(data, function(d) {return +d.s2_round})])
+      .domain(currentValue === '22-23' ? [1,d3.max(data, function(d) {return +d.round})] : [1,d3.max(data, function(d) {return +d.s2_round})])
       .range([0,width]);
     svg.append("g")
       .attr("transform", `translate(0, ${height})`)
