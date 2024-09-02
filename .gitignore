@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Ignore push_to_gh_pages.txt
+push_to_gh_pages.txt
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
