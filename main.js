@@ -12,7 +12,8 @@ document.querySelector('#app').innerHTML = `
   <div id="seasons">
     <label for="season">Season:</label>
     <select name="season" id="season-select">
-      <option value="23-24" selected>2023/2024</option>
+      <option value="24-25" selected>2024/2025</option>
+      <option value="23-24">2023/2024</option>
       <option value="22-23">2022/2023</option>
     </select>
   </div>
@@ -67,7 +68,7 @@ const statsTable =  `<table id="stats-table" width=${width * 1.2}>
 const seasonToggle = document.getElementById('season-select');
 seasonToggle.addEventListener('change', updateGraph);
 
-// Update graph
+// Initialise graph
 updateGraph();
 
 function updateGraph() {
@@ -93,6 +94,7 @@ function updateGraph() {
     // Define lists of season participants
     const seasonOneNames = ["andy", "david", "jake", "james", "jonnie", "josh", "sam"];
     const seasonTwoNames = ["andy", "david", "ed", "jack", "jake", "james", "jonnie", "josh", "sam"];
+    const seasonThreeNames = ["andy", "david", "ed", "jack", "jake", "james", "jonnie", "josh", "sam", "tom"];
   
     // Get the data from the last 10 rounds
     //const lastTen = data.slice(-70);
@@ -100,22 +102,23 @@ function updateGraph() {
     // TODO Implement a toggle button and some conditional logic to set lastTen as data source.
 
     let graphData = null;
+
+    // Define switch case statement for season toggle
+    switch (currentValue) {
+      case '22-23': 
+        // Reformat the data: we need an array of arrays of {x, y} tuples
+        graphData = seasonOneNames.map( function(name) { // .map allows to do something for each element of the list
+          return {
+            name: name,
+            values: data.filter(function(d) {
+              if (d.name === name) {return true;}
+              return false;
+              }).map(function(d) { return {round: +d.round, score:+d.score, score_sum: +d.score_sum} })
+            };
+        });
+        break;
     
-    if (currentValue === '22-23') {
-
-      // Reformat the data: we need an array of arrays of {x, y} tuples
-      graphData = seasonOneNames.map( function(name) { // .map allows to do something for each element of the list
-        return {
-          name: name,
-          values: data.filter(function(d) {
-            if (d.name === name) {return true;}
-            return false;
-          }).map(function(d) { return {round: +d.round, score:+d.score, score_sum: +d.score_sum} })
-        };
-      });
-      //console.log(graphData);
-    } else {
-
+      case '23-24':
         // Reformat the data: we need an array of arrays of {x, y} tuples
         graphData = seasonTwoNames.map( function(name) { // .map allows to do something for each element of the list
           return {
@@ -126,7 +129,51 @@ function updateGraph() {
             }).map(function(d) { return {round: +d.s2_round, score:+d.s2_score, score_sum: +d.s2_score_sum} })
           };
         });
-    }
+        break;
+
+      case '24-25':
+        // Reformat the data: we need an array of arrays of {x, y} tuples
+        graphData = seasonThreeNames.map( function(name) { // .map allows to do something for each element of the list
+          return {
+            name: name,
+            values: data.filter(function(d) {
+              if (d.s3_name === name) {return true;}
+              return false;
+            }).map(function(d) { return {round: +d.s3_round, score:+d.s3_score, score_sum: +d.s3_score_sum} })
+          };
+        });
+        break;
+
+      default:
+        console.log('No recognised season toggle!');
+    };
+    
+    // if (currentValue === '22-23') {
+
+    //   // Reformat the data: we need an array of arrays of {x, y} tuples
+    //   graphData = seasonOneNames.map( function(name) { // .map allows to do something for each element of the list
+    //     return {
+    //       name: name,
+    //       values: data.filter(function(d) {
+    //         if (d.name === name) {return true;}
+    //         return false;
+    //       }).map(function(d) { return {round: +d.round, score:+d.score, score_sum: +d.score_sum} })
+    //     };
+    //   });
+    //   //console.log(graphData);
+    // } else {
+
+    //     // Reformat the data: we need an array of arrays of {x, y} tuples
+    //     graphData = seasonTwoNames.map( function(name) { // .map allows to do something for each element of the list
+    //       return {
+    //         name: name,
+    //         values: data.filter(function(d) {
+    //           if (d.s2_name === name) {return true;}
+    //           return false;
+    //         }).map(function(d) { return {round: +d.s2_round, score:+d.s2_score, score_sum: +d.s2_score_sum} })
+    //       };
+    //     });
+    // }
 
     //console.log(graphData);
   
@@ -136,13 +183,17 @@ function updateGraph() {
   
     // Add X axis
     const x = d3.scaleLinear()
-      .domain(currentValue === '22-23' ? [1,d3.max(data, function(d) {return +d.round})] : [1,d3.max(data, function(d) {return +d.s2_round})])
+      .domain(currentValue === '22-23' ? [1,d3.max(data, function(d) {return +d.round})]
+        : currentValue === '23-24' ? [1,d3.max(data, function(d) {return +d.s2_round})]
+        : [1,d3.max(data, function(d) {return +d.s3_round})])
       .range([0,width]);
     svg.append("g")
       .attr("transform", `translate(0, ${height})`)
       .style("font-size", "0.75rem")
       .call(d3.axisBottom(x)
-      .ticks(currentValue === '22-23' ? d3.max(data, function(d) {return +d.round })/2 : d3.max(data, function(d) {return +d.s2_round })/2));
+      .ticks(currentValue === '22-23' ? d3.max(data, function(d) {return +d.round })/2
+        : currentValue === '23-24' ? d3.max(data, function(d) {return +d.s2_round })/2
+        : d3.max(data, function(d) {return +d.s3_round })/2));
   
     // Add the X gridlines
     svg.append("g")			
@@ -163,13 +214,22 @@ function updateGraph() {
     // Add Y axis
     const y = d3.scaleLinear()
       //.domain([0, Math.ceil(d3.max(data, function(d) { return +d.score_sum; })/10)*10])
-      .domain([d3.min(data, function(d) {return currentValue === '22-23' ? +d.score_sum: +d.s2_score_sum}), Math.ceil(d3.max(data, function(d) { return currentValue === '22-23' ? +d.score_sum: +d.s2_score_sum })/10)*10])
+      .domain([d3.min(data, function(d) {
+        return currentValue === '22-23' ? +d.score_sum 
+          : currentValue === '23-24'? +d.s2_score_sum
+          : +d.s3_score_sum}), 
+        Math.ceil(d3.max(data, function(d) {
+          return currentValue === '22-23' ? +d.score_sum
+          : currentValue === '23-24' ? +d.s2_score_sum
+          : +d.s3_score_sum })/10)*10])
       .range([height, 0]);
     svg.append("g")
       .style("font-size", "0.75rem")
       .call(d3.axisLeft(y)
       //.ticks(currentValue === '22-23' ? width === defaultWidth ? d3.max(data, function(d) { return +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum})/40 : 20))
-      .ticks(width === defaultWidth ? d3.max(data, function(d) { return +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum})/40));
+      .ticks(width === defaultWidth ? 
+            d3.max(data, function(d) { return +d.score_sum })/40 
+            : d3.max(data, function(d) { return +d.score_sum})/40));
   
       // Add the Y gridlines
     svg.append("g")			
@@ -178,7 +238,9 @@ function updateGraph() {
       .tickSize(-width)
       .tickFormat("")
       //.ticks(currentValue === '22-23' ? width === defaultWidth ? d3.max(data, function(d) { return  +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum })/10 : 20))
-      .ticks(width === defaultWidth ? d3.max(data, function(d) { return  +d.score_sum })/20 : d3.max(data, function(d) { return +d.score_sum })/10));
+      .ticks(width === defaultWidth ? 
+            d3.max(data, function(d) { return  +d.score_sum })/10
+            : d3.max(data, function(d) { return +d.score_sum })/10));
   
     // Add Y axis label
     svg.append("text")
@@ -208,14 +270,18 @@ function updateGraph() {
   
     // Create legend dots
     const dots = svg.selectAll("myDots")
-      .data(currentValue === '22-23' ? seasonOneNames : seasonTwoNames)
+      .data(currentValue === '22-23' ? seasonOneNames 
+        : currentValue === '23-24' ? seasonTwoNames
+        : seasonThreeNames)
       .enter()
       .append("circle")
         .attr("cx", function(d,i) {
           if (currentValue === '22-23') {
             return width === defaultWidth ? 0 + i*100 : 0 + i*70;
-          } else {
+          } else if (currentValue === '23-24') {
             return width === defaultWidth ? -20 + i*80 : -30 + i*60;
+          } else {
+            return width === defaultWidth ? -23 + i*70 : -60 + i*60;
           }})
         .attr("cy", -20)
         .attr("r", 5)
@@ -223,14 +289,18 @@ function updateGraph() {
   
     // Add legend labels for each name next to each dot.
     const labels = svg.selectAll("myLabels")
-      .data(currentValue === '22-23' ? seasonOneNames : seasonTwoNames)
+      .data(currentValue === '22-23' ? seasonOneNames 
+        : currentValue === '23-24' ? seasonTwoNames
+        : seasonThreeNames)
       .enter()
       .append("text")
         .attr("x", function(d,i) {
           if (currentValue === '22-23') {
             return width === defaultWidth ? 7 + i*100 : 7 + i*70; 
-          } else {
+          } else if (currentValue === '23-24') {
             return width === defaultWidth ? -13 + i*80 : -23 + i*60;
+          } else {
+            return width === defaultWidth ? -15 + i*70 : -53 + i*60;
           }})
         .attr("y", -15)
         .attr("class", "legend-label")
