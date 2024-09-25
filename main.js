@@ -187,13 +187,14 @@ function updateGraph() {
         : currentValue === '23-24' ? [1,d3.max(data, function(d) {return +d.s2_round})]
         : [1,d3.max(data, function(d) {return +d.s3_round})])
       .range([0,width]);
+    
     svg.append("g")
       .attr("transform", `translate(0, ${height})`)
       .style("font-size", "0.75rem")
       .call(d3.axisBottom(x)
       .ticks(currentValue === '22-23' ? d3.max(data, function(d) {return +d.round })/2
         : currentValue === '23-24' ? d3.max(data, function(d) {return +d.s2_round })/2
-        : d3.max(data, function(d) {return +d.s3_round })/2));
+        : d3.max(data, function(d) {return +d.s3_round })));
   
     // Add the X gridlines
     svg.append("g")			
@@ -267,6 +268,12 @@ function updateGraph() {
       .attr("stroke", d => myColor(d.name))
       .style("stroke-width", 2)
       .style("fill", "none");
+
+    // Create legend container
+    const legendContainer = svg.append('g')
+      .attr("class", "legend-container")
+      .append("g")
+        .attr("class", "testclass");
   
     // Create legend dots
     const dots = svg.selectAll("myDots")

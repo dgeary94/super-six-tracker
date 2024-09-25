@@ -82,10 +82,3 @@ table {
   stroke-opacity: 0.2;
   shape-rendering: crispEdges;
 }
-
-/* Media query for smaller screens 
-@media only screen and (min-width: 762px) {
-  .legend-label {
-    font-size: 1.2rem;
-  }
-}*/
