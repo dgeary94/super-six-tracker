@@ -270,13 +270,14 @@ function updateGraph() {
       .style("fill", "none");
 
     // Create legend container
-    const legendContainer = svg.append('g')
-      .attr("class", "legend-container")
-      .append("g")
-        .attr("class", "testclass");
+    svg.append('g')
+      .attr("id", "legend-container")
+      .attr("width", width + margin.left + margin.right);
+
+    const legendContainer = d3.select('#legend-container');
   
     // Create legend dots
-    const dots = svg.selectAll("myDots")
+    legendContainer.selectAll("myDots")
       .data(currentValue === '22-23' ? seasonOneNames 
         : currentValue === '23-24' ? seasonTwoNames
         : seasonThreeNames)
@@ -292,10 +293,11 @@ function updateGraph() {
           }})
         .attr("cy", -20)
         .attr("r", 5)
+        .attr("class", "legend-dots")
         .style("fill", d => myColor(d));
   
     // Add legend labels for each name next to each dot.
-    const labels = svg.selectAll("myLabels")
+    legendContainer.selectAll("myLabels")
       .data(currentValue === '22-23' ? seasonOneNames 
         : currentValue === '23-24' ? seasonTwoNames
         : seasonThreeNames)
@@ -368,7 +370,6 @@ function updateGraph() {
       updateTable(graphData);
   
     });
-
 }
 
 function updateTable(data) {
@@ -376,7 +377,7 @@ function updateTable(data) {
 
   // Check if table already exists in the DOM
   if (document.getElementById('stats-table') === null) {
-    //console.log("Table does not exist yet!");
+    console.log("Table does not exist yet!");
 
     d3.select("#app").append("div").html(statsTable);
 

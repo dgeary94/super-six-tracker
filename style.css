@@ -68,6 +68,13 @@ table {
   margin: 2rem 0 0 0;
 }
 
+#legend-container {
+  display: flex;
+  flex-wrap: wrap; /* Allows the items to wrap into new rows */
+  justify-content: space-between;
+  /*gap: 10px; /* Optional: Add some space between the items */
+}
+
 @keyframes rotation {
   from {
     transform: rotate(0deg);
@@ -81,4 +88,8 @@ table {
   stroke: lightgrey;
   stroke-opacity: 0.2;
   shape-rendering: crispEdges;
+}
+
+.legend-dots {
+  flex: 0 1 auto; /* Ensure items take up their natural width but can shrink if needed */
 }
