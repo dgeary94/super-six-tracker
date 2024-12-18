@@ -277,7 +277,7 @@ function updateGraph() {
     const legendContainer = d3.select('#legend-container');
   
     // Create legend dots
-    legendContainer.selectAll("myDots")
+    const dots = legendContainer.selectAll("myDots")
       .data(currentValue === '22-23' ? seasonOneNames 
         : currentValue === '23-24' ? seasonTwoNames
         : seasonThreeNames)
@@ -297,7 +297,7 @@ function updateGraph() {
         .style("fill", d => myColor(d));
   
     // Add legend labels for each name next to each dot.
-    legendContainer.selectAll("myLabels")
+    const labels = legendContainer.selectAll("myLabels")
       .data(currentValue === '22-23' ? seasonOneNames 
         : currentValue === '23-24' ? seasonTwoNames
         : seasonThreeNames)
