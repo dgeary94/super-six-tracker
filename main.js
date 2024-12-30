@@ -274,7 +274,12 @@ function updateGraph() {
       .attr("id", "legend-container")
       .attr("width", width + margin.left + margin.right);
 
-    const legendContainer = d3.select('#legend-container');
+    const legendContainer = d3.select("#legend-container");
+
+    // Create legend container
+    // const legendContainer = d3.select("#app")
+    //   .append("div")
+    //   .attr("id", "legend-container");
   
     // Create legend dots
     const dots = legendContainer.selectAll("myDots")
