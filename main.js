@@ -269,17 +269,15 @@ function updateGraph() {
       .style("stroke-width", 2)
       .style("fill", "none");
 
-    // Create legend container
     svg.append('g')
-      .attr("id", "legend-container")
-      .attr("width", width + margin.left + margin.right);
-
-    const legendContainer = d3.select("#legend-container");
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", margin.top)
+      .attr("x", 0)
+      .attr("y", -50)
+      .attr("id","legend-container");
 
     // Create legend container
-    // const legendContainer = d3.select("#app")
-    //   .append("div")
-    //   .attr("id", "legend-container");
+    const legendContainer = d3.select("#legend-container");
   
     // Create legend dots
     const dots = legendContainer.selectAll("myDots")
