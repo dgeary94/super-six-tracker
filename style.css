@@ -54,6 +54,10 @@ table {
 }
 
 #app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   max-width: 1280px;
   margin: 0 auto;
   padding: 1rem;
@@ -70,6 +74,7 @@ table {
 
 #legend-container {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap; /* Allows the items to wrap into new rows */
   justify-content: space-between;
   /*gap: 10px; /* Optional: Add some space between the items */
