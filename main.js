@@ -468,6 +468,16 @@ function updateTable(data) {
     individualScores.push(scores);
   }
 
+  // Calculate sum scores
+  const sumScores = [];
+  for (let i = 0; i < individualScores.length; i++) {
+    let sum = 0;
+    for (let j = 0; j < individualScores[i].length; j++) {
+      sum += individualScores[i][j];
+    }
+    sumScores.push(sum);
+  }
+
   // Obtain the top score from each round
   const topScore = [];
   for (let i = 0; i < individualScores[0].length; i++) {
@@ -511,6 +521,9 @@ function updateTable(data) {
     names[i] = capName;
   }
 
+  // Find the index of the current top sum score in an array
+  const sumScoreTop = sumScores.indexOf(d3.max(sumScores));
+
   // Clear contents of stats table
   nameHeader.innerHTML = "";
   maxRound.innerHTML = "";
@@ -521,7 +534,11 @@ function updateTable(data) {
   nameHeader.innerHTML = `<th></th>`;
   // Select name header and add <th> for all names
   for (let i = 0; i < names.length; i++) {
-    nameHeader.innerHTML += `<th>${names[i]}</th>`;
+    if (i === sumScoreTop) {
+      nameHeader.innerHTML += `<th>${names[i]}&#129351;</th>`; // Add crown emoji to current leader
+    } else {
+      nameHeader.innerHTML += `<th>${names[i]}</th>`;
+    }
   }
 
   // Populate table with values
