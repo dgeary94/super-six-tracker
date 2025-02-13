@@ -535,14 +535,13 @@ function updateTable(data) {
   // Select name header and add <th> for all names
   for (let i = 0; i < names.length; i++) {
     if (i === sumScoreTop) {
-      nameHeader.innerHTML += `<th>${names[i]}&#129351;</th>`; // Add crown emoji to current leader
+      nameHeader.innerHTML += `<th>${names[i]}&#129351;</th>`; // Add gold medal emoji to current leader
     } else {
       nameHeader.innerHTML += `<th>${names[i]}</th>`;
     }
   }
 
   // Populate table with values
-
   maxRound.innerHTML = `<td>Best Round</td>`;
   for (let idx = 0; idx < individualScores.length; idx++) {
     maxRound.innerHTML += `<td>${d3.max(individualScores[idx])}</td>`;
