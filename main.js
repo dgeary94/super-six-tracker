@@ -129,7 +129,7 @@ function updateGraph() {
       "jonnie",
       "josh",
       "sam",
-      "tom",
+      // "tom",
     ];
 
     // Get the data from the last 10 rounds
