@@ -52,13 +52,13 @@ function setSize(width, height) {
 [width, height] = setSize();
 
 // HTML for the stats table.
-const statsTable = `<table id="stats-table" width=${width * 1.2}>
+let statsTable = `<table id="stats-table" width=${width * 1.2}>
 <thead>
     <tr id="name-header">
       <th></th>
     </tr>
 </thead>
-<tbody>
+<tbody id="stats-rows">
     <tr id="max-round-score"></tr>
     <tr id="avg-round-score"></tr>
     <tr id="standard-dev"></tr>
@@ -80,7 +80,7 @@ function updateGraph() {
 
   // Get current dropdown value
   const currentValue = seasonToggle.value;
-  //console.log(currentValue);
+  console.log(`Current season: ${currentValue}`);
 
   // Append the svg object to the body of the page
   const svg = d3
@@ -207,6 +207,8 @@ function updateGraph() {
                   round: +d.s3_round,
                   score: +d.s3_score,
                   score_sum: +d.s3_score_sum,
+                  correct_results: +d.s3_correct_results,
+                  correct_scores: +d.s3_correct_scores,
                 };
               }),
           };
@@ -441,21 +443,36 @@ function updateGraph() {
         });
       });
 
-    updateTable(graphData);
+    updateTable(graphData, currentValue, statsTable);
   });
 }
 
-function updateTable(data) {
-  //console.log("Update the table.");
+function updateTable(data, season, table) {
+  console.log("Updating the table.");
 
   // Check if table already exists in the DOM
   if (document.getElementById("stats-table") === null) {
     console.log("Table does not exist yet!");
 
-    d3.select("#app").append("div").html(statsTable);
+    d3.select("#app").append("div").html(table);
 
     // Add p tag to display rounds won explanation
     d3.select("#app").append("p").html("* Includes tied winners.");
+  }
+
+  if (season === "24-25") {
+    let rows = document.getElementById("stats-rows");
+    rows.innerHTML += `
+    <tr id="correct-results"></tr>
+    <tr id="correct-scores"></tr>`;
+  }
+
+  // Get correct result and score totals
+  const corrResults = [];
+  const corrScores = [];
+  for (let i = 0; i < data.length; i++) {
+    corrResults.push(data[i].values.slice(-1)[0].correct_results);
+    corrScores.push(data[i].values.slice(-1)[0].correct_scores);
   }
 
   // Obtain individual scores for each participant
@@ -507,6 +524,8 @@ function updateTable(data) {
   const avgRound = document.getElementById("avg-round-score");
   const stDev = document.getElementById("standard-dev");
   const roundsWon = document.getElementById("rounds-won");
+  const correctResults = document.getElementById("correct-results");
+  const correctScores = document.getElementById("correct-scores");
 
   // Push names of data to a new array
   let names = [];
@@ -530,6 +549,8 @@ function updateTable(data) {
   avgRound.innerHTML = "";
   stDev.innerHTML = "";
   roundsWon.innerHTML = "";
+  correctResults.innerHTML = "";
+  correctScores.innerHTML = "";
 
   nameHeader.innerHTML = `<th></th>`;
   // Select name header and add <th> for all names
@@ -564,5 +585,17 @@ function updateTable(data) {
   roundsWon.innerHTML = `<td>Rounds Won<sup>*</sup></td>`;
   for (let idx = 0; idx < individualScores.length; idx++) {
     roundsWon.innerHTML += `<td>${numberOfRoundsWon[idx]}</td>`;
+  }
+
+  if (season === "24-25") {
+    correctResults.innerHTML = `<td>Correct Results</td>`;
+    for (let idx = 0; idx < corrResults.length; idx++) {
+      correctResults.innerHTML += `<td>${corrResults[idx]}</td>`;
+    }
+
+    correctScores.innerHTML = `<td>Correct Scores</td>`;
+    for (let idx = 0; idx < corrScores.length; idx++) {
+      correctScores.innerHTML += `<td>${corrScores[idx]}</td>`;
+    }
   }
 }
