@@ -1,9 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { StrictMode } from "react";
 import App from "./App.jsx";
-
-// Clear the existing HTML content
-document.body.innerHTML = '<div id="app"></div>';
+import "./style.css"; 
 
 // Render your React component instead
 const root = createRoot(document.getElementById("app"));
