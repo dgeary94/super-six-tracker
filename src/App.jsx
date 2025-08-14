@@ -1,6 +1,7 @@
 import React, { useState, useLayoutEffect } from "react";
 import imgURL from "./assets/football.svg";
 import Graph from "./components/Graph";
+import Table from "./components/Table";
 import * as d3 from "d3";
 import csvData from "./super-six-scores.csv";
 
@@ -144,6 +145,11 @@ function App() {
           rawData={rawData}
           players={players}
         />
+      ) : (
+        <p>Loading...</p>
+      )}
+      {Object.keys(graphData).length > 0 ? (
+        <Table data={graphData} season={season} width={"100"} />
       ) : (
         <p>Loading...</p>
       )}
