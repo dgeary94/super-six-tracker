@@ -41,16 +41,19 @@ p {
 
 table {
   border: #213547 solid;
-  margin: 2rem auto 2rem auto;
+  margin: 2rem auto 0.5rem auto;
   border-collapse: collapse;
+  /* table-layout: fixed; */
+  width: 640px;
 }
 
 thead {
   background-color: #e8e8e6;
 }
 
-table {
-  margin: 2rem auto 0.5rem auto;
+td,
+th {
+  word-wrap: break-word;
 }
 
 #app {

@@ -28,9 +28,6 @@ const Graph = ({ season, data, rawData, players }) => {
   };
 
   useEffect(() => {
-    console.log(season);
-    console.log(data);
-    console.log(rawData);
     if (!graphRef.current) return;
 
     // Clear previous graph and legend

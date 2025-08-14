@@ -102,7 +102,6 @@ function App() {
         default:
           console.log("No recognised season toggle!");
       }
-      console.log("Setting state...");
       setGraphData(seasonData);
       setPlayers(
         season === "22-23"
@@ -149,7 +148,7 @@ function App() {
         <p>Loading...</p>
       )}
       {Object.keys(graphData).length > 0 ? (
-        <Table data={graphData} season={season} width={"100"} />
+        <Table data={graphData} season={season} />
       ) : (
         <p>Loading...</p>
       )}
