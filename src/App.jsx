@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import imgURL from "./assets/football.svg";
 import Graph from "./components/Graph";
 import * as d3 from "d3";
@@ -37,17 +37,18 @@ const seasonThreeNames = [
   "sam",
 ];
 
+const rawData = await d3.csv(csvData);
+console.log("Retrieved raw data.");
+
 function App() {
   const [season, setSeason] = useState("24-25");
-  const [rawData, setRawData] = useState(null);
-  const [graphData, setGraphData] = useState(null);
+  const [graphData, setGraphData] = useState({});
   const [players, setPlayers] = useState(seasonThreeNames);
 
-  useEffect(() => {
-    const getData = async (season) => {
+  useLayoutEffect(() => {
+    const getData = (season) => {
       console.log("Effect triggered.");
       console.log(`season is: ${season}`);
-      const rawData = await d3.csv(csvData);
       let seasonData = null;
       switch (season) {
         case "22-23":
@@ -101,7 +102,6 @@ function App() {
           console.log("No recognised season toggle!");
       }
       console.log("Setting state...");
-      setRawData(rawData);
       setGraphData(seasonData);
       setPlayers(
         season === "22-23"
@@ -128,8 +128,8 @@ function App() {
           id="season-select"
           value={season}
           onChange={(e) => {
+            setGraphData({});
             setSeason(e.target.value);
-            setGraphData(null);
           }}
         >
           <option value="24-25">2024/2025</option>
@@ -137,7 +137,7 @@ function App() {
           <option value="22-23">2022/2023</option>
         </select>
       </div>
-      {graphData !== null ? (
+      {Object.keys(graphData).length > 0 ? (
         <Graph
           season={season}
           data={graphData}
