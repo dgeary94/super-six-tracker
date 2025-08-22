@@ -12,7 +12,8 @@ document.querySelector("#app").innerHTML = `
   <div id="seasons">
     <label for="season">Season:</label>
     <select name="season" id="season-select">
-      <option value="24-25" selected>2024/2025</option>
+      <option value="25-26" selected>2025/2026</option>
+      <option value="24-25">2024/2025</option>
       <option value="23-24">2023/2024</option>
       <option value="22-23">2022/2023</option>
     </select>
@@ -131,6 +132,18 @@ function updateGraph() {
       "sam",
       // "tom",
     ];
+    const seasonFourNames = [
+      "andy",
+      "david",
+      "ed",
+      "jack",
+      "jake",
+      "james",
+      "jonnie",
+      "josh",
+      "sam",
+      "chatbog",
+    ];
 
     // Get the data from the last 10 rounds
     //const lastTen = data.slice(-70);
@@ -215,6 +228,32 @@ function updateGraph() {
         });
         break;
 
+      case "25-26":
+        // Reformat the data: we need an array of arrays of {x, y} tuples
+        graphData = seasonFourNames.map(function (name) {
+          // .map allows to do something for each element of the list
+          return {
+            name: name,
+            values: data
+              .filter(function (d) {
+                if (d.s4_name === name) {
+                  return true;
+                }
+                return false;
+              })
+              .map(function (d) {
+                return {
+                  round: +d.s4_round,
+                  score: +d.s4_score,
+                  score_sum: +d.s4_score_sum,
+                  correct_results: +d.s4_correct_results,
+                  correct_scores: +d.s4_correct_scores,
+                };
+              }),
+          };
+        });
+        break;
+
       default:
         console.log("No recognised season toggle!");
     }
@@ -245,10 +284,17 @@ function updateGraph() {
                 return +d.s2_round;
               }),
             ]
-          : [
+          : currentValue === "24-25"
+          ? [
               1,
               d3.max(data, function (d) {
                 return +d.s3_round;
+              }),
+            ]
+          : [
+              1,
+              d3.max(data, function (d) {
+                return +d.s4_round;
               }),
             ]
       )
@@ -268,8 +314,12 @@ function updateGraph() {
             ? d3.max(data, function (d) {
                 return +d.s2_round;
               }) / 2
-            : d3.max(data, function (d) {
+            : currentValue === "24-25"
+            ? d3.max(data, function (d) {
                 return +d.s3_round;
+              }) / 2
+            : d3.max(data, function (d) {
+                return +d.s4_round;
               }) / 2
         )
       );
@@ -397,7 +447,9 @@ function updateGraph() {
           ? seasonOneNames
           : currentValue === "23-24"
           ? seasonTwoNames
-          : seasonThreeNames
+          : currentValue === "24-25"
+          ? seasonThreeNames
+          : seasonFourNames
       )
       .enter()
       .append("div")
@@ -460,7 +512,7 @@ function updateTable(data, season, table) {
     d3.select("#app").append("p").html("* Includes tied winners.");
   }
 
-  if (season === "24-25") {
+  if (season === "24-25" || season === "25-26") {
     let rows = document.getElementById("stats-rows");
     rows.innerHTML += `
     <tr id="correct-results"></tr>
@@ -471,8 +523,13 @@ function updateTable(data, season, table) {
   const corrResults = [];
   const corrScores = [];
   for (let i = 0; i < data.length; i++) {
-    corrResults.push(data[i].values.slice(-1)[0].correct_results);
-    corrScores.push(data[i].values.slice(-1)[0].correct_scores);
+    if (data[i].values.length <= 1) {
+      corrResults.push(data[i].values.correct_results);
+      corrScores.push(data[i].values.correct_scores);
+    } else {
+      corrResults.push(data[i].values.slice(-1)[0].correct_results);
+      corrScores.push(data[i].values.slice(-1)[0].correct_scores);
+    }
   }
 
   // Obtain individual scores for each participant
@@ -530,12 +587,19 @@ function updateTable(data, season, table) {
   // Push names of data to a new array
   let names = [];
   for (let i = 0; i < data.length; i++) {
-    names.push(data[i].name);
+    if (data[i].name === "chatbog") {
+      names.push("&#129484;");
+    } else {
+      names.push(data[i].name);
+    }
   }
 
   // Capitalise each name in names
   for (let i = 0; i < names.length; i++) {
     let name = names[i];
+    if (name === "&#129484;") {
+      continue;
+    }
     let capName = name.charAt(0).toUpperCase() + name.slice(1);
     names[i] = capName;
   }
