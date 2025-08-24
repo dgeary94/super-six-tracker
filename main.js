@@ -141,6 +141,7 @@ function updateGraph() {
       "james",
       "jonnie",
       "josh",
+      "leo",
       "sam",
       "chatbog",
     ];
@@ -524,8 +525,8 @@ function updateTable(data, season, table) {
   const corrScores = [];
   for (let i = 0; i < data.length; i++) {
     if (data[i].values.length <= 1) {
-      corrResults.push(data[i].values.correct_results);
-      corrScores.push(data[i].values.correct_scores);
+      corrResults.push(data[i].values[0].correct_results);
+      corrScores.push(data[i].values[0].correct_scores);
     } else {
       corrResults.push(data[i].values.slice(-1)[0].correct_results);
       corrScores.push(data[i].values.slice(-1)[0].correct_scores);
@@ -651,7 +652,7 @@ function updateTable(data, season, table) {
     roundsWon.innerHTML += `<td>${numberOfRoundsWon[idx]}</td>`;
   }
 
-  if (season === "24-25") {
+  if (season === "24-25" || season === "25-26") {
     correctResults.innerHTML = `<td>Correct Results</td>`;
     for (let idx = 0; idx < corrResults.length; idx++) {
       correctResults.innerHTML += `<td>${corrResults[idx]}</td>`;
