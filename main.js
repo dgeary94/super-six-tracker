@@ -423,11 +423,14 @@ function updateGraph() {
       .attr("y", width === defaultWidth ? height / 2 : -margin.top * 2)
       .text("Points");
 
+    let colors = d3.schemePaired;
+    colors[10] = colors[11];
+
     // Creating the colour scheme
     const myColor = d3
       .scaleOrdinal()
       .domain(currentValue === "22-23" ? seasonOneNames : seasonTwoNames)
-      .range(d3.schemeTableau10);
+      .range(colors);
 
     // Add the lines
     const line = d3
