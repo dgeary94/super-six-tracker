@@ -64,7 +64,9 @@ const Graph = ({ season, data, rawData, players }) => {
             ? +d.round
             : season === "23-24"
             ? +d.s2_round
-            : +d.s3_round
+            : season === "24-25"
+            ? +d.s3_round
+            : +d.s4_round
         ),
       ])
       .range([0, width]);
@@ -82,7 +84,9 @@ const Graph = ({ season, data, rawData, players }) => {
                 ? +d.round
                 : season === "23-24"
                 ? +d.s2_round
-                : +d.s3_round
+                : season === "24-25"
+                ? +d.s3_round
+                : +d.s4_round
             ) / 2
           )
       );
@@ -120,7 +124,9 @@ const Graph = ({ season, data, rawData, players }) => {
             ? +d.score_sum
             : season === "23-24"
             ? +d.s2_score_sum
-            : +d.s3_score_sum
+            : season === "24-25"
+            ? +d.s3_score_sum
+            : +d.s4_score_sum
         ),
         Math.ceil(
           d3.max(rawData, (d) =>
@@ -128,7 +134,9 @@ const Graph = ({ season, data, rawData, players }) => {
               ? +d.score_sum
               : season === "23-24"
               ? +d.s2_score_sum
-              : +d.s3_score_sum
+              : season === "24-25"
+              ? +d.s3_score_sum
+              : +d.s4_score_sum
           ) / 10
         ) * 10,
       ])

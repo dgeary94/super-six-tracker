@@ -37,14 +37,27 @@ const seasonThreeNames = [
   "josh",
   "sam",
 ];
+const seasonFourNames = [
+  "andy",
+  "david",
+  "ed",
+  "jack",
+  "jake",
+  "james",
+  "jonnie",
+  "josh",
+  "leo",
+  "sam",
+  "chatbog",
+];
 
 const rawData = await d3.csv(csvData);
 console.log("Retrieved raw data.");
 
 function App() {
-  const [season, setSeason] = useState("24-25");
+  const [season, setSeason] = useState("25-26");
   const [graphData, setGraphData] = useState({});
-  const [players, setPlayers] = useState(seasonThreeNames);
+  const [players, setPlayers] = useState(seasonFourNames);
 
   useLayoutEffect(() => {
     const getData = (season) => {
@@ -99,6 +112,23 @@ function App() {
             };
           });
           break;
+        case "25-26":
+          console.log("Getting S4 data...");
+          seasonData = seasonFourNames.map(function (name) {
+            return {
+              name: name,
+              values: rawData
+                .filter((d) => d.s4_name === name)
+                .map((d) => ({
+                  round: +d.s4_round,
+                  score: +d.s4_score,
+                  score_sum: +d.s4_score_sum,
+                  correct_results: +d.s4_correct_results,
+                  correct_scores: +d.s4_correct_scores,
+                })),
+            };
+          });
+          break;
         default:
           console.log("No recognised season toggle!");
       }
@@ -108,7 +138,9 @@ function App() {
           ? seasonOneNames
           : season === "23-24"
           ? seasonTwoNames
-          : seasonThreeNames
+          : season === "24-25"
+          ? seasonThreeNames
+          : seasonFourNames
       );
     };
     getData(season);
@@ -132,6 +164,7 @@ function App() {
             setSeason(e.target.value);
           }}
         >
+          <option value="25-26">2025/2026</option>
           <option value="24-25">2024/2025</option>
           <option value="23-24">2023/2024</option>
           <option value="22-23">2022/2023</option>

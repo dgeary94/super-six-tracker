@@ -93,7 +93,7 @@ const Table = ({ data, season, width = 100 }) => {
             <td key={i}>{wins}</td>
           ))}
         </tr>
-        {season === "24-25" && (
+        {(season === "24-25" || season === "25-26") && (
           <>
             <tr>
               <td>Correct Results</td>
