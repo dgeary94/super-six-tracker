@@ -6,6 +6,10 @@ const margin = { top: 20, right: 80, bottom: 40, left: 80 };
 const defaultWidth = 800 - margin.left - margin.right;
 const defaultHeight = 500 - margin.top - margin.bottom;
 
+// Colours
+let colours = d3.schemePaired;
+colours[10] = colours[11]; // Convert last colour to brown
+
 const Graph = ({ season, data, rawData, players }) => {
   const [width, setWidth] = useState(defaultWidth);
   const [height, setHeight] = useState(defaultHeight);
@@ -54,7 +58,7 @@ const Graph = ({ season, data, rawData, players }) => {
       return d3.axisLeft(y).ticks();
     }
 
-    // Add X axis
+    // Define X axis
     const x = d3
       .scaleLinear()
       .domain([
@@ -71,6 +75,7 @@ const Graph = ({ season, data, rawData, players }) => {
       ])
       .range([0, width]);
 
+    // Add X axis
     svg
       .append("g")
       .attr("transform", `translate(0, ${height})`)
@@ -102,7 +107,13 @@ const Graph = ({ season, data, rawData, players }) => {
           .tickFormat("")
           .ticks(
             d3.max(rawData, (d) =>
-              season === "22-23" ? +d.round : +d.s2_round
+              season === "22-23"
+                ? +d.round
+                : season === "23-24"
+                ? +d.s2_round
+                : season === "24-25"
+                ? +d.s3_round
+                : +d.s4_round
             ) / 2
           )
       );
@@ -115,7 +126,7 @@ const Graph = ({ season, data, rawData, players }) => {
       .attr("y", height + margin.bottom)
       .text("Round");
 
-    // Add Y axis
+    // Define Y axis
     const y = d3
       .scaleLinear()
       .domain([
@@ -141,6 +152,8 @@ const Graph = ({ season, data, rawData, players }) => {
         ) * 10,
       ])
       .range([height, 0]);
+
+    // Add Y axis
     svg
       .append("g")
       .style("font-size", "0.75rem")
@@ -148,7 +161,7 @@ const Graph = ({ season, data, rawData, players }) => {
         d3
           .axisLeft(y)
           .ticks(
-            width === defaultWidth
+            season === defaultWidth
               ? d3.max(rawData, (d) => +d.score_sum) / 40
               : d3.max(rawData, (d) => +d.score_sum) / 40
           )
@@ -163,9 +176,13 @@ const Graph = ({ season, data, rawData, players }) => {
           .tickSize(-width)
           .tickFormat("")
           .ticks(
-            width === defaultWidth
+            season === "22-23"
               ? d3.max(rawData, (d) => +d.score_sum) / 10
-              : d3.max(rawData, (d) => +d.score_sum) / 10
+              : season === "23-24"
+              ? d3.max(rawData, (d) => +d.s2_score_sum) / 10
+              : season === "24-25"
+              ? d3.max(rawData, (d) => +d.s3_score_sum) / 10
+              : d3.max(rawData, (d) => +d.s4_score_sum)
           )
       );
 
@@ -179,7 +196,7 @@ const Graph = ({ season, data, rawData, players }) => {
       .text("Points");
 
     // Creating the colour scheme
-    const myColor = d3.scaleOrdinal().domain(players).range(d3.schemeTableau10);
+    const myColor = d3.scaleOrdinal().domain(players).range(colours);
 
     // Add the lines
     const line = d3
