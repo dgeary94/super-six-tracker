@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as d3 from "d3";
+import Legend from "./Legend";
 
 // Dimensions
 const margin = { top: 20, right: 80, bottom: 40, left: 80 };
@@ -7,14 +8,15 @@ const defaultWidth = 800 - margin.left - margin.right;
 const defaultHeight = 500 - margin.top - margin.bottom;
 
 // Colours
-let colours = d3.schemePaired;
-colours[10] = colours[11]; // Convert last colour to brown
+let colourPalette = d3.schemePaired;
+colourPalette[10] = colourPalette[11]; // Convert last colour to brown
 
 const Graph = ({ season, data, rawData, players }) => {
   const [width, setWidth] = useState(defaultWidth);
   const [height, setHeight] = useState(defaultHeight);
+  const [toggledPlayers, setToggledPlayers] = useState([]);
   const graphRef = useRef(null);
-  const legendRef = useRef(null);
+  const linesRef = useRef(null);
 
   const setSize = () => {
     const defaultRatio = defaultWidth / defaultHeight;
@@ -31,12 +33,24 @@ const Graph = ({ season, data, rawData, players }) => {
     }
   };
 
+  const handleLegendClick = (playerName) => {
+    setToggledPlayers((prev) => {
+      const isPlayerToggled = prev.includes(playerName);
+      if (isPlayerToggled) {
+        return prev.filter((p) => p !== playerName);
+      } else {
+        return [...prev, playerName];
+      }
+    });
+  };
+
+  const colourScale = d3.scaleOrdinal().domain(players).range(colourPalette);
+
   useEffect(() => {
     if (!graphRef.current) return;
 
-    // Clear previous graph and legend
+    // Clear previous graph
     d3.select(graphRef.current).selectAll("*").remove();
-    d3.select(legendRef.current).selectAll("*").remove();
 
     const svg = d3
       .select(graphRef.current)
@@ -45,10 +59,6 @@ const Graph = ({ season, data, rawData, players }) => {
       .attr("height", `${height + margin.top + margin.bottom}px`)
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-    const legendContainer = d3
-      .select(legendRef.current)
-      .style("width", `${width}px`);
 
     // Functions for adding gridlines
     function addXGridlines() {
@@ -161,7 +171,7 @@ const Graph = ({ season, data, rawData, players }) => {
         d3
           .axisLeft(y)
           .ticks(
-            season === defaultWidth
+            width === defaultWidth
               ? d3.max(rawData, (d) => +d.score_sum) / 40
               : d3.max(rawData, (d) => +d.score_sum) / 40
           )
@@ -195,60 +205,40 @@ const Graph = ({ season, data, rawData, players }) => {
       .attr("y", width === defaultWidth ? height / 2 : -margin.top * 2)
       .text("Points");
 
-    // Creating the colour scheme
-    const myColor = d3.scaleOrdinal().domain(players).range(colours);
-
     // Add the lines
     const line = d3
       .line()
       .x((d) => x(+d.round))
       .y((d) => y(+d.score_sum));
 
-    const lines = svg
+    linesRef.current = svg
       .selectAll("myLines")
       .data(data)
       .join("path")
       .attr("d", (d) => line(d.values))
-      .attr("stroke", (d) => myColor(d.name))
+      .attr("stroke", (d) => colourScale(d.name))
       .style("stroke-width", 2)
       .style("fill", "none");
+  }, [season, data, rawData, players, width, height]);
 
-    // Add legend labels
-    const labels = legendContainer
-      .selectAll("myLabels")
-      .data(players)
-      .enter()
-      .append("div")
-      .attr("class", "legend-label")
-      .style("color", (d) => myColor(d))
-      .text((d) => d)
-      .style("alignment-baseline", "middle")
-      .on("click", (event, d) => {
-        const clickedName = d;
-        const isCurrentlyVisible =
-          d3.select(event.currentTarget).style("opacity") === "1";
-
-        // Toggle legend opacity
-        d3.select(event.currentTarget).style(
-          "opacity",
-          isCurrentlyVisible ? "0.33" : "1"
-        );
-
-        // Toggle line opacity
-        lines
-          .filter((lineData) => lineData.name === clickedName)
-          .style("opacity", isCurrentlyVisible ? "0" : "1");
-      });
-
-    // Set initial opacity for all legends and lines
-    labels.style("opacity", "1");
-    lines.style("opacity", "1");
-  }, []);
+  useEffect(() => {
+    if (linesRef.current) {
+      linesRef.current.style("opacity", (d) =>
+        toggledPlayers.includes(d.name) ? "0" : "1"
+      );
+    }
+  }, [toggledPlayers]);
 
   return (
     <>
       <p>Click each name to toggle data series.</p>
-      <div id="legend-container" ref={legendRef}></div>
+      <Legend
+        players={players}
+        colourScale={colourScale}
+        onLegendClick={handleLegendClick}
+        toggledPlayers={toggledPlayers}
+        width={width}
+      />
       <div id="graph" ref={graphRef}></div>
     </>
   );
