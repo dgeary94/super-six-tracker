@@ -229,6 +229,10 @@ const Graph = ({ season, data, rawData, players }) => {
     }
   }, [toggledPlayers]);
 
+  useEffect(() => {
+    setSize();
+  }, []);
+
   return (
     <>
       <p>Click each name to toggle data series.</p>
@@ -237,7 +241,7 @@ const Graph = ({ season, data, rawData, players }) => {
         colourScale={colourScale}
         onLegendClick={handleLegendClick}
         toggledPlayers={toggledPlayers}
-        width={width}
+        width={width * 1.2}
       />
       <div id="graph" ref={graphRef}></div>
     </>
