@@ -5,7 +5,7 @@ import Table from "./components/Table";
 import * as d3 from "d3";
 import csvData from "./super-six-scores.csv";
 
-// Define lists of season participants
+// Define season participants
 const seasonOneNames = [
   "andy",
   "david",
@@ -61,8 +61,7 @@ function App() {
 
   useLayoutEffect(() => {
     const getData = (season) => {
-      console.log("Effect triggered.");
-      console.log(`season is: ${season}`);
+      console.log(`Season is: ${season}`);
       let seasonData = null;
       switch (season) {
         case "22-23":

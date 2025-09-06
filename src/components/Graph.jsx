@@ -7,7 +7,7 @@ const margin = { top: 20, right: 80, bottom: 40, left: 80 };
 const defaultWidth = 800 - margin.left - margin.right;
 const defaultHeight = 500 - margin.top - margin.bottom;
 
-// Colours
+// Define colour palette
 let colourPalette = d3.schemePaired;
 colourPalette[10] = colourPalette[11]; // Convert last colour to brown
 
@@ -44,6 +44,7 @@ const Graph = ({ season, data, rawData, players }) => {
     });
   };
 
+  // Define colour scale
   const colourScale = d3.scaleOrdinal().domain(players).range(colourPalette);
 
   useEffect(() => {
@@ -60,7 +61,7 @@ const Graph = ({ season, data, rawData, players }) => {
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-    // Functions for adding gridlines
+    // Add gridlines
     function addXGridlines() {
       return d3.axisBottom(x).ticks();
     }
@@ -221,6 +222,7 @@ const Graph = ({ season, data, rawData, players }) => {
       .style("fill", "none");
   }, [season, data, rawData, players, width, height]);
 
+  // Toggle line opacity
   useEffect(() => {
     if (linesRef.current) {
       linesRef.current.style("opacity", (d) =>
@@ -229,6 +231,7 @@ const Graph = ({ season, data, rawData, players }) => {
     }
   }, [toggledPlayers]);
 
+  // Set plot size relative to window
   useEffect(() => {
     setSize();
   }, []);
