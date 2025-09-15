@@ -102,7 +102,7 @@ const Graph = ({ season, data, rawData, players }) => {
                 ? +d.s2_round
                 : season === "24-25"
                 ? +d.s3_round
-                : +d.s4_round
+                : +d.s4_round * 2
             ) / 2
           )
       );
@@ -124,7 +124,7 @@ const Graph = ({ season, data, rawData, players }) => {
                 ? +d.s2_round
                 : season === "24-25"
                 ? +d.s3_round
-                : +d.s4_round
+                : +d.s4_round * 2
             ) / 2
           )
       );
@@ -244,7 +244,7 @@ const Graph = ({ season, data, rawData, players }) => {
         colourScale={colourScale}
         onLegendClick={handleLegendClick}
         toggledPlayers={toggledPlayers}
-        width={width * 1.2}
+        width={width * 1.25}
       />
       <div id="graph" ref={graphRef}></div>
     </>
