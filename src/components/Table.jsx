@@ -60,7 +60,7 @@ const Table = ({ data, season, width = 100 }) => {
           <th></th>
           {names.map((name, i) => (
             <th key={i}>
-              {name}
+              {name === "Chatbog" ? "🧌" : name}
               {i === topSumScoreIndex ? "🥇" : ""}
             </th>
           ))}
