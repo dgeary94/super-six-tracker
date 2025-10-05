@@ -24,7 +24,7 @@ const Graph = ({ season, data, rawData, players }) => {
     const currentHeight = window.innerHeight;
     const currentRatio = currentWidth / currentHeight;
 
-    if (currentRatio > defaultRatio) {
+    if (currentRatio > defaultRatio || currentWidth > defaultWidth) {
       setHeight(defaultHeight);
       setWidth(defaultWidth);
     } else {
@@ -49,6 +49,9 @@ const Graph = ({ season, data, rawData, players }) => {
 
   useEffect(() => {
     if (!graphRef.current) return;
+
+    console.log(width, height);
+    console.log(defaultWidth, defaultHeight);
 
     // Clear previous graph
     d3.select(graphRef.current).selectAll("*").remove();
@@ -134,7 +137,7 @@ const Graph = ({ season, data, rawData, players }) => {
       .append("text")
       .attr("text-anchor", "center")
       .attr("x", (width - 50) / 2)
-      .attr("y", height + margin.bottom)
+      .attr("y", height + margin.bottom - 1)
       .text("Round");
 
     // Define Y axis

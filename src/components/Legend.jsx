@@ -18,7 +18,7 @@ const Legend = ({
             opacity: toggledPlayers.includes(player) ? "0.33" : "1",
             cursor: "pointer",
             display: "inline-block",
-            padding: "5px 10px",
+            padding: "5px 7px",
             fontSize: "1rem",
           }}
           onClick={() => onLegendClick(player)}

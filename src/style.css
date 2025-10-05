@@ -41,10 +41,8 @@ p {
 
 table {
   border: #213547 solid;
-  margin: 2rem auto 0.5rem auto;
+  margin: 2rem 1rem 0.5rem 1rem;
   border-collapse: collapse;
-  /* table-layout: fixed; */
-  width: 640px;
 }
 
 thead {
@@ -78,9 +76,8 @@ th {
 #legend-container {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap; /* Allows the items to wrap into new rows */
+  flex-wrap: wrap;
   justify-content: space-between;
-  /*gap: 10px; /* Optional: Add some space between the items */
 }
 
 @keyframes rotation {
@@ -94,10 +91,6 @@ th {
 
 .grid {
   stroke: lightgrey;
-  stroke-opacity: 0.2;
+  stroke-opacity: 0.1;
   shape-rendering: crispEdges;
-}
-
-.legend-dots {
-  flex: 0 1 auto; /* Ensure items take up their natural width but can shrink if needed */
 }
