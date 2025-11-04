@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as d3 from "d3";
 import Legend from "./Legend";
+import Table from "./Table";
 
 // Dimensions
 const margin = { top: 20, right: 80, bottom: 40, left: 80 };
@@ -49,9 +50,6 @@ const Graph = ({ season, data, rawData, players }) => {
 
   useEffect(() => {
     if (!graphRef.current) return;
-
-    console.log(width, height);
-    console.log(defaultWidth, defaultHeight);
 
     // Clear previous graph
     d3.select(graphRef.current).selectAll("*").remove();
@@ -196,7 +194,7 @@ const Graph = ({ season, data, rawData, players }) => {
               ? d3.max(rawData, (d) => +d.s2_score_sum) / 10
               : season === "24-25"
               ? d3.max(rawData, (d) => +d.s3_score_sum) / 10
-              : d3.max(rawData, (d) => +d.s4_score_sum)
+              : d3.max(rawData, (d) => +d.s4_score_sum) / 5
           )
       );
 
@@ -250,6 +248,7 @@ const Graph = ({ season, data, rawData, players }) => {
         width={width * 1.25}
       />
       <div id="graph" ref={graphRef}></div>
+      <Table season={season} data={data} width={width} />
     </>
   );
 };

@@ -1,11 +1,13 @@
-:root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
+@import "tailwindcss";
 
+@theme {
+  --font-sans: 'InterVariable', sans-serif;
+  --animate-spin: spin 10s linear infinite;
+}
+
+:root {
   color: #213547;
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,69 +26,22 @@ body {
   overflow-x: hidden;
 }
 
-h1 {
-  display: inline-block;
-  font-size: 3em;
-  line-height: 1.1;
-  margin: auto 1rem;
-}
-
-h2 {
-  margin: 0 auto;
-}
-
-p {
-  margin: 0 auto;;
-}
-
-table {
-  border: #213547 solid;
-  margin: 2rem 1rem 0.5rem 1rem;
-  border-collapse: collapse;
-}
-
-thead {
-  background-color: #e8e8e6;
-}
-
-td,
 th {
-  word-wrap: break-word;
-}
-
-#app {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 1rem;
   text-align: center;
+  padding: 0.25rem 0;
 }
 
-#football {
-  animation: rotation 10s infinite linear;
+td {
+  word-wrap: break-word;
+  padding: 0.25rem 0;
 }
 
-#seasons {
-  margin: 2rem 0 0 0;
-}
 
 #legend-container {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
-}
-
-@keyframes rotation {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(359deg);
-  }
 }
 
 .grid {

@@ -7,6 +7,6 @@ import "./style.css";
 const root = createRoot(document.getElementById("app"));
 root.render(
   <StrictMode>
-    <App />
+    <App/>
   </StrictMode>
 );
