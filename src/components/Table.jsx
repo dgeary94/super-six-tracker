@@ -36,7 +36,7 @@ const calculateRoundsWon = (individualScores, topScorePerRound) => {
   return roundsWon;
 };
 
-const Table = ({ data, season, width = 100 }) => {
+const Table = ({ data, season }) => {
   const names = data.map(
     (d) => d.name.charAt(0).toUpperCase() + d.name.slice(1)
   );

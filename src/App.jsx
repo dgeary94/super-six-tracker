@@ -136,10 +136,10 @@ function App() {
         season === "22-23"
           ? seasonOneNames
           : season === "23-24"
-          ? seasonTwoNames
-          : season === "24-25"
-          ? seasonThreeNames
-          : seasonFourNames
+            ? seasonTwoNames
+            : season === "24-25"
+              ? seasonThreeNames
+              : seasonFourNames,
       );
     };
     getData(season);
@@ -147,16 +147,25 @@ function App() {
 
   return (
     <>
-      <div id="title">
-        <img id="football" src={imgURL} alt="Logo" width="60" height="60" />
-        <h1>Super 6 League Tracker</h1>
+      <div id="title" class="flex flex-row items-center justify-center p-2">
+        <img
+          src={imgURL}
+          alt="Logo"
+          width="60"
+          height="60"
+          class="animate-spin"
+        />
+        <h1 class="mx-4 font-sans text-4xl font-semibold md:text-5xl">
+          Super 6 League Tracker
+        </h1>
       </div>
-      <h2>QUE SERA SERA, WE'RE GOING TO WORMBELLY</h2>
-      <div id="seasons">
-        <label htmlFor="season">Season:</label>
+      <h2 class="font-sans">QUE SERA SERA, WE'RE GOING TO WORMBELLY</h2>
+      <div id="seasons" class="py-2 mt-4">
+        <label htmlFor="season" class="text-lg">Season:</label>
         <select
           name="season"
           id="season-select"
+          class="mx-2 cursor-pointer rounded border border-slate-300 bg-transparent p-1 hover:border-slate-400"
           value={season}
           onChange={(e) => {
             setGraphData({});
