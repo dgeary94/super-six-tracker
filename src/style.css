@@ -26,20 +26,16 @@ body {
   overflow-x: hidden;
 }
 
-table {
-  border: #213547 solid;
-  margin: 2rem 1rem 0.5rem 1rem;
-  border-collapse: collapse;
-}
-
-thead {
-  background-color: #e8e8e6;
-}
-
-td,
 th {
-  word-wrap: break-word;
+  text-align: center;
+  padding: 0.25rem 0;
 }
+
+td {
+  word-wrap: break-word;
+  padding: 0.25rem 0;
+}
+
 
 #legend-container {
   display: flex;

@@ -1,7 +1,6 @@
 import React, { useState, useLayoutEffect } from "react";
 import imgURL from "./assets/football.svg";
 import Graph from "./components/Graph";
-import Table from "./components/Table";
 import * as d3 from "d3";
 import csvData from "./super-six-scores.csv";
 
@@ -159,9 +158,13 @@ function App() {
           Super 6 League Tracker
         </h1>
       </div>
-      <h2 class="font-sans">QUE SERA SERA, WE'RE GOING TO WORMBELLY</h2>
-      <div id="seasons" class="py-2 mt-4">
-        <label htmlFor="season" class="text-lg">Season:</label>
+      <h2 class="font-sans text-xl font-semibold">
+        QUE SERA SERA, WE'RE GOING TO WORMBELLY
+      </h2>
+      <div id="seasons" class="mt-4 py-2">
+        <label htmlFor="season" class="text-lg">
+          Season:
+        </label>
         <select
           name="season"
           id="season-select"
@@ -179,17 +182,15 @@ function App() {
         </select>
       </div>
       {Object.keys(graphData).length > 0 ? (
-        <Graph
-          season={season}
-          data={graphData}
-          rawData={rawData}
-          players={players}
-        />
-      ) : (
-        <p>Loading...</p>
-      )}
-      {Object.keys(graphData).length > 0 ? (
-        <Table data={graphData} season={season} />
+        <>
+          <Graph
+            season={season}
+            data={graphData}
+            rawData={rawData}
+            players={players}
+          />
+          <p class="font-sans">*Includes tied winners</p>
+        </>
       ) : (
         <p>Loading...</p>
       )}

@@ -36,9 +36,9 @@ const calculateRoundsWon = (individualScores, topScorePerRound) => {
   return roundsWon;
 };
 
-const Table = ({ data, season }) => {
+const Table = ({ data, season, width }) => {
   const names = data.map(
-    (d) => d.name.charAt(0).toUpperCase() + d.name.slice(1)
+    (d) => d.name.charAt(0).toUpperCase() + d.name.slice(1),
   );
   const individualScores = calculateIndividualScores(data);
   const sumScores = calculateSumScores(individualScores);
@@ -50,67 +50,72 @@ const Table = ({ data, season }) => {
   const corrScores = data.map((d) => d.values.slice(-1)[0].correct_scores);
 
   return (
-    <table id="stats-table">
-      <colgroup>
-        <col style={{ width: "20%" }} />
-        <col span={names.length} style={{ width: "auto" }} />
-      </colgroup>
-      <thead>
-        <tr>
-          <th></th>
-          {names.map((name, i) => (
-            <th key={i}>
-              {name === "Chatbog" ? "🧌" : name}
-              {i === topSumScoreIndex ? "🥇" : ""}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Best Round</td>
-          {individualScores.map((scores, i) => (
-            <td key={i}>{d3.max(scores)}</td>
-          ))}
-        </tr>
-        <tr>
-          <td>Avg Round</td>
-          {individualScores.map((scores, i) => (
-            <td key={i}>{Math.round(d3.mean(scores) * 10) / 10}</td>
-          ))}
-        </tr>
-        <tr>
-          <td>Std Dev</td>
-          {individualScores.map((scores, i) => (
-            <td key={i}>{Math.round(d3.deviation(scores) * 10) / 10}</td>
-          ))}
-        </tr>
-        <tr>
-          <td>
-            Rounds Won<sup>*</sup>
-          </td>
-          {roundsWon.map((wins, i) => (
-            <td key={i}>{wins}</td>
-          ))}
-        </tr>
-        {(season === "24-25" || season === "25-26") && (
-          <>
-            <tr>
-              <td>Correct Results</td>
-              {corrResults.map((results, i) => (
-                <td key={i}>{results}</td>
-              ))}
-            </tr>
-            <tr>
-              <td>Correct Scores</td>
-              {corrScores.map((scores, i) => (
-                <td key={i}>{scores}</td>
-              ))}
-            </tr>
-          </>
-        )}
-      </tbody>
-    </table>
+    <div
+      class="relative mx-auto my-8 flex h-full w-full min-w-xl flex-col overflow-clip rounded-lg border bg-clip-border shadow-md"
+      style={{ width: width }}
+    >
+      <table id="stats-table" class="table-auto">
+        <colgroup>
+          <col style={{ width: "20%" }} />
+          <col span={names.length} style={{ width: "auto" }} />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="border-b bg-slate-300"></th>
+            {names.map((name, i) => (
+              <th key={i} class="border-b bg-slate-300">
+                {name === "Chatbog" ? "🧌" : name}
+                {i === topSumScoreIndex ? "🥇" : ""}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Best Round</td>
+            {individualScores.map((scores, i) => (
+              <td key={i}>{d3.max(scores)}</td>
+            ))}
+          </tr>
+          <tr>
+            <td>Avg Round</td>
+            {individualScores.map((scores, i) => (
+              <td key={i}>{Math.round(d3.mean(scores) * 10) / 10}</td>
+            ))}
+          </tr>
+          <tr>
+            <td>Std Dev</td>
+            {individualScores.map((scores, i) => (
+              <td key={i}>{Math.round(d3.deviation(scores) * 10) / 10}</td>
+            ))}
+          </tr>
+          <tr>
+            <td>
+              Rounds Won<sup>*</sup>
+            </td>
+            {roundsWon.map((wins, i) => (
+              <td key={i}>{wins}</td>
+            ))}
+          </tr>
+          {(season === "24-25" || season === "25-26") && (
+            <>
+              <tr>
+                <td>Correct Results</td>
+                {corrResults.map((results, i) => (
+                  <td key={i}>{results}</td>
+                ))}
+              </tr>
+              <tr>
+                <td>Correct Scores</td>
+                {corrScores.map((scores, i) => (
+                  <td key={i}>{scores}</td>
+                ))}
+              </tr>
+            </>
+          )}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
