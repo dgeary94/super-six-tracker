@@ -103,7 +103,7 @@ const Graph = ({ season, data, rawData, players }) => {
                 ? +d.s2_round
                 : season === "24-25"
                 ? +d.s3_round
-                : +d.s4_round * 2
+                : +d.s4_round
             ) / 2
           )
       );
@@ -125,7 +125,7 @@ const Graph = ({ season, data, rawData, players }) => {
                 ? +d.s2_round
                 : season === "24-25"
                 ? +d.s3_round
-                : +d.s4_round * 2
+                : +d.s4_round
             ) / 2
           )
       );
