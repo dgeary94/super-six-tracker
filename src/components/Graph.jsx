@@ -12,7 +12,7 @@ const defaultHeight = 500 - margin.top - margin.bottom;
 let colourPalette = d3.schemePaired;
 colourPalette[10] = colourPalette[11]; // Convert last colour to brown
 
-const Graph = ({ season, data, rawData, players }) => {
+const Graph = ({ season, data, players }) => {
   const [width, setWidth] = useState(defaultWidth);
   const [height, setHeight] = useState(defaultHeight);
   const [toggledPlayers, setToggledPlayers] = useState([]);
@@ -70,65 +70,26 @@ const Graph = ({ season, data, rawData, players }) => {
       return d3.axisLeft(y).ticks();
     }
 
+    const maxRound = d3.max(data, (d) => d3.max(d.values, (v) => v.round));
+    const minScoreSum = d3.min(data, (d) => d3.min(d.values, (v) => v.score_sum));
+    const maxScoreSum = d3.max(data, (d) => d3.max(d.values, (v) => v.score_sum));
+
     // Define X axis
-    const x = d3
-      .scaleLinear()
-      .domain([
-        1,
-        d3.max(rawData, (d) =>
-          season === "22-23"
-            ? +d.round
-            : season === "23-24"
-            ? +d.s2_round
-            : season === "24-25"
-            ? +d.s3_round
-            : +d.s4_round
-        ),
-      ])
-      .range([0, width]);
+    const x = d3.scaleLinear().domain([1, maxRound]).range([0, width]);
 
     // Add X axis
     svg
       .append("g")
       .attr("transform", `translate(0, ${height})`)
       .style("font-size", "0.75rem")
-      .call(
-        d3
-          .axisBottom(x)
-          .ticks(
-            d3.max(rawData, (d) =>
-              season === "22-23"
-                ? +d.round
-                : season === "23-24"
-                ? +d.s2_round
-                : season === "24-25"
-                ? +d.s3_round
-                : +d.s4_round
-            ) / 2
-          )
-      );
+      .call(d3.axisBottom(x).ticks(maxRound / 2));
 
     // Add the X gridlines
     svg
       .append("g")
       .attr("class", "grid")
       .attr("transform", "translate(0," + height + ")")
-      .call(
-        addXGridlines()
-          .tickSize(-height)
-          .tickFormat("")
-          .ticks(
-            d3.max(rawData, (d) =>
-              season === "22-23"
-                ? +d.round
-                : season === "23-24"
-                ? +d.s2_round
-                : season === "24-25"
-                ? +d.s3_round
-                : +d.s4_round
-            ) / 2
-          )
-      );
+      .call(addXGridlines().tickSize(-height).tickFormat("").ticks(maxRound / 2));
 
     // Add X axis label
     svg
@@ -141,43 +102,14 @@ const Graph = ({ season, data, rawData, players }) => {
     // Define Y axis
     const y = d3
       .scaleLinear()
-      .domain([
-        d3.min(rawData, (d) =>
-          season === "22-23"
-            ? +d.score_sum
-            : season === "23-24"
-            ? +d.s2_score_sum
-            : season === "24-25"
-            ? +d.s3_score_sum
-            : +d.s4_score_sum
-        ),
-        Math.ceil(
-          d3.max(rawData, (d) =>
-            season === "22-23"
-              ? +d.score_sum
-              : season === "23-24"
-              ? +d.s2_score_sum
-              : season === "24-25"
-              ? +d.s3_score_sum
-              : +d.s4_score_sum
-          ) / 10
-        ) * 10,
-      ])
+      .domain([minScoreSum, Math.ceil(maxScoreSum / 10) * 10])
       .range([height, 0]);
 
     // Add Y axis
     svg
       .append("g")
       .style("font-size", "0.75rem")
-      .call(
-        d3
-          .axisLeft(y)
-          .ticks(
-            width === defaultWidth
-              ? d3.max(rawData, (d) => +d.score_sum) / 40
-              : d3.max(rawData, (d) => +d.score_sum) / 40
-          )
-      );
+      .call(d3.axisLeft(y).ticks(maxScoreSum / 40));
 
     // Add the Y gridlines
     svg
@@ -187,15 +119,7 @@ const Graph = ({ season, data, rawData, players }) => {
         addYGridlines()
           .tickSize(-width)
           .tickFormat("")
-          .ticks(
-            season === "22-23"
-              ? d3.max(rawData, (d) => +d.score_sum) / 10
-              : season === "23-24"
-              ? d3.max(rawData, (d) => +d.s2_score_sum) / 10
-              : season === "24-25"
-              ? d3.max(rawData, (d) => +d.s3_score_sum) / 10
-              : d3.max(rawData, (d) => +d.s4_score_sum) / 5
-          )
+          .ticks(season === "25-26" ? maxScoreSum / 5 : maxScoreSum / 10),
       );
 
     // Add Y axis label
@@ -221,7 +145,7 @@ const Graph = ({ season, data, rawData, players }) => {
       .attr("stroke", (d) => colourScale(d.name))
       .style("stroke-width", 2)
       .style("fill", "none");
-  }, [season, data, rawData, players, width, height]);
+  }, [season, data, players, width, height]);
 
   // Toggle line opacity
   useEffect(() => {

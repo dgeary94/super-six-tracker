@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Env vars
+.env
+.env.*
+!.env.example
+
 # Ignore push_to_gh_pages.txt
 push_to_gh_pages.txt
 

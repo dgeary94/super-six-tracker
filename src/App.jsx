@@ -1,147 +1,25 @@
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import imgURL from "./assets/football.svg";
 import Graph from "./components/Graph";
-import * as d3 from "d3";
-import csvData from "./super-six-scores.csv";
-
-// Define season participants
-const seasonOneNames = [
-  "andy",
-  "david",
-  "jake",
-  "james",
-  "jonnie",
-  "josh",
-  "sam",
-];
-const seasonTwoNames = [
-  "andy",
-  "david",
-  "ed",
-  "jack",
-  "jake",
-  "james",
-  "jonnie",
-  "josh",
-  "sam",
-];
-const seasonThreeNames = [
-  "andy",
-  "david",
-  "ed",
-  "jack",
-  "jake",
-  "james",
-  "jonnie",
-  "josh",
-  "sam",
-];
-const seasonFourNames = [
-  "andy",
-  "david",
-  "ed",
-  "jack",
-  "jake",
-  "james",
-  "jonnie",
-  "josh",
-  "leo",
-  "sam",
-  "chatbog",
-];
-
-const rawData = await d3.csv(csvData);
-console.log("Retrieved raw data.");
+import { getSeasonData } from "./lib/seasonData";
 
 function App() {
-  const [season, setSeason] = useState("25-26");
-  const [graphData, setGraphData] = useState({});
-  const [players, setPlayers] = useState(seasonFourNames);
+  // `season` drives the dropdown and the fetch; `shown` only updates once
+  // that fetch resolves, so the previous graph stays on screen (no
+  // unmount/"Loading..." flash) and Graph/Table never see a season/data
+  // mismatch mid-fetch.
+  const [season, setSeason] = useState("26-27");
+  const [shown, setShown] = useState(null);
 
-  useLayoutEffect(() => {
-    const getData = (season) => {
-      console.log(`Season is: ${season}`);
-      let seasonData = null;
-      switch (season) {
-        case "22-23":
-          console.log("Getting S1 data...");
-          seasonData = seasonOneNames.map(function (name) {
-            return {
-              name: name,
-              values: rawData
-                .filter((d) => d.name === name)
-                .map((d) => ({
-                  round: +d.round,
-                  score: +d.score,
-                  score_sum: +d.score_sum,
-                })),
-            };
-          });
-          break;
-        case "23-24":
-          console.log("Getting S2 data...");
-          seasonData = seasonTwoNames.map(function (name) {
-            return {
-              name: name,
-              values: rawData
-                .filter((d) => d.s2_name === name)
-                .map((d) => ({
-                  round: +d.s2_round,
-                  score: +d.s2_score,
-                  score_sum: +d.s2_score_sum,
-                })),
-            };
-          });
-          break;
-        case "24-25":
-          console.log("Getting S3 data...");
-          seasonData = seasonThreeNames.map(function (name) {
-            return {
-              name: name,
-              values: rawData
-                .filter((d) => d.s3_name === name)
-                .map((d) => ({
-                  round: +d.s3_round,
-                  score: +d.s3_score,
-                  score_sum: +d.s3_score_sum,
-                  correct_results: +d.s3_correct_results,
-                  correct_scores: +d.s3_correct_scores,
-                })),
-            };
-          });
-          break;
-        case "25-26":
-          console.log("Getting S4 data...");
-          seasonData = seasonFourNames.map(function (name) {
-            return {
-              name: name,
-              values: rawData
-                .filter((d) => d.s4_name === name)
-                .map((d) => ({
-                  round: +d.s4_round,
-                  score: +d.s4_score,
-                  score_sum: +d.s4_score_sum,
-                  correct_results: +d.s4_correct_results,
-                  correct_scores: +d.s4_correct_scores,
-                })),
-            };
-          });
-          break;
-        default:
-          console.log("No recognised season toggle!");
-      }
-      setGraphData(seasonData);
-      setPlayers(
-        season === "22-23"
-          ? seasonOneNames
-          : season === "23-24"
-            ? seasonTwoNames
-            : season === "24-25"
-              ? seasonThreeNames
-              : seasonFourNames,
-      );
+  useEffect(() => {
+    let cancelled = false;
+    getSeasonData(season).then(({ players, graphData }) => {
+      if (cancelled) return;
+      setShown({ season, players, graphData });
+    });
+    return () => {
+      cancelled = true;
     };
-    getData(season);
   }, [season]);
 
   return (
@@ -170,24 +48,21 @@ function App() {
           id="season-select"
           class="mx-2 cursor-pointer rounded border border-slate-300 bg-transparent p-1 hover:border-slate-400"
           value={season}
-          onChange={(e) => {
-            setGraphData({});
-            setSeason(e.target.value);
-          }}
+          onChange={(e) => setSeason(e.target.value)}
         >
+          <option value="26-27">2026/2027</option>
           <option value="25-26">2025/2026</option>
           <option value="24-25">2024/2025</option>
           <option value="23-24">2023/2024</option>
           <option value="22-23">2022/2023</option>
         </select>
       </div>
-      {Object.keys(graphData).length > 0 ? (
+      {shown ? (
         <>
           <Graph
-            season={season}
-            data={graphData}
-            rawData={rawData}
-            players={players}
+            season={shown.season}
+            data={shown.graphData}
+            players={shown.players}
           />
           <p class="font-sans">*Includes tied winners</p>
         </>
