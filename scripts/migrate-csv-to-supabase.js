@@ -67,6 +67,14 @@ const SEASONS = [
     correctResults: "s4_correct_results",
     correctScores: "s4_correct_scores",
   },
+  {
+    label: "26-27",
+    round: "s5_round",
+    name: "s5_name",
+    score: "s5_score",
+    correctResults: "s5_correct_results",
+    correctScores: "s5_correct_scores",
+  },
 ];
 
 const num = (value) => (value === undefined || value === "" ? null : +value);

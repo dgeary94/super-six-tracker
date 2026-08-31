@@ -8,7 +8,7 @@ function App() {
   // that fetch resolves, so the previous graph stays on screen (no
   // unmount/"Loading..." flash) and Graph/Table never see a season/data
   // mismatch mid-fetch.
-  const [season, setSeason] = useState("25-26");
+  const [season, setSeason] = useState("26-27");
   const [shown, setShown] = useState(null);
 
   useEffect(() => {
@@ -50,6 +50,7 @@ function App() {
           value={season}
           onChange={(e) => setSeason(e.target.value)}
         >
+          <option value="26-27">2026/2027</option>
           <option value="25-26">2025/2026</option>
           <option value="24-25">2024/2025</option>
           <option value="23-24">2023/2024</option>
