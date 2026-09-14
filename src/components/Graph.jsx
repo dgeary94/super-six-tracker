@@ -82,14 +82,14 @@ const Graph = ({ season, data, players }) => {
       .append("g")
       .attr("transform", `translate(0, ${height})`)
       .style("font-size", "0.75rem")
-      .call(d3.axisBottom(x).ticks(maxRound / 2));
+      .call(d3.axisBottom(x).ticks(maxRound < 20 ? maxRound : maxRound / 2));
 
     // Add the X gridlines
     svg
       .append("g")
       .attr("class", "grid")
       .attr("transform", "translate(0," + height + ")")
-      .call(addXGridlines().tickSize(-height).tickFormat("").ticks(maxRound / 2));
+      .call(addXGridlines().tickSize(-height).tickFormat("").ticks(maxRound < 20 ? maxRound : maxRound / 2));
 
     // Add X axis label
     svg
@@ -109,7 +109,7 @@ const Graph = ({ season, data, players }) => {
     svg
       .append("g")
       .style("font-size", "0.75rem")
-      .call(d3.axisLeft(y).ticks(maxScoreSum / 40));
+      .call(d3.axisLeft(y).ticks(maxScoreSum < 200 ? maxScoreSum / 10 : maxScoreSum / 40));
 
     // Add the Y gridlines
     svg
@@ -119,7 +119,7 @@ const Graph = ({ season, data, players }) => {
         addYGridlines()
           .tickSize(-width)
           .tickFormat("")
-          .ticks(season === "25-26" ? maxScoreSum / 5 : maxScoreSum / 10),
+          .ticks(season === "26-27" ? maxScoreSum / 5 : maxScoreSum / 10),
       );
 
     // Add Y axis label
