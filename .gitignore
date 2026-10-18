@@ -12,6 +12,14 @@ dist
 dist-ssr
 *.local
 
+# Python venv for scripts/fetch_results.py
+.venv
+__pycache__/
+
+# Historical data snapshot — now kept locally only as input to
+# `npm run migrate:csv`; scores live in Supabase, not this file.
+src/super-six-scores.csv
+
 # Env vars
 .env
 .env.*

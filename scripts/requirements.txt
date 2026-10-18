@@ -1,0 +1,10 @@
+# Dependencies for scripts/fetch_results.py.
+#
+#   python3.11 -m venv .venv
+#   .venv/bin/pip install -r scripts/requirements.txt
+#
+# Needs a local Chrome install; Selenium Manager downloads the matching
+# chromedriver on first run.
+requests==2.32.3
+selenium==4.31.0
+python-dotenv==1.1.1
